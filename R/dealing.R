@@ -105,7 +105,7 @@ getAnalysisData <- function(vat, key = "PCA", cols=c(1:50),as.data.frame=FALSE){
 #' @param vat vat entity
 #' @export
 getAnalysisKey <- function(vat){
-  return (names(bhsc@analysis))
+  return (names(vat@analysis))
 }
 
 #' get availbale analysis data colnames

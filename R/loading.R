@@ -105,14 +105,14 @@ initVATEntity <- function(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
   if(cell.scale){
     index <- c(1:nrow(entity@cell.props))
     if(scale.factor==0){
-      scale.factor <- mean(entity@cell.props$umi)
+      scale.factor <- median(entity@cell.props$umi)
     }
 
-    if(verbose) ulapply <- pbapply::pblapply
-    else ulapply <- lapply
-    entity@data <- ulapply(index, function(x){return(entity@data[,x] * scale.factor /entity@cell.props$umi[x])})
-
-    entity@data <- do.call("cbind", entity@data)
+    #if(verbose) ulapply <- pbapply::pblapply
+    #else ulapply <- lapply
+    #entity@data <- ulapply(index, function(x){return(entity@data[,x] * scale.factor /entity@cell.props$umi[x])})
+    entity@data <- entity@data * scale.factor / entity@cell.props$umi
+    #entity@data <- do.call("cbind", entity@data)
     entity@data <- as(entity@data,"sparseMatrix")
   }
   if(log.trans){
