@@ -2,7 +2,7 @@
 % Please edit documentation in R/loading.R
 \name{loadAnalysisFromCSV}
 \alias{loadAnalysisFromCSV}
-\title{load analysis result manually}
+\title{load analysis result manually from csv}
 \usage{
 loadAnalysisFromCSV(vat, filename, ndims = 2, key = "tSNE", ...)
 }
@@ -19,5 +19,5 @@ loadAnalysisFromCSV(vat, filename, ndims = 2, key = "tSNE", ...)
 new vat entity including new analysis result
 }
 \description{
-load analysis result manually
+load analysis result manually from csv
 }

@@ -123,7 +123,7 @@ initVATEntity <- function(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
   return(entity)
 }
 
-#' load analysis result manually
+#' load analysis result manually from csv
 #' @param vat VATEntity object
 #' @param filename csv filename
 #' @param ndims the dim of analysis result
@@ -139,13 +139,26 @@ loadAnalysisFromCSV <- function(vat, filename, ndims = 2, key = "tSNE", ...){
     data <- as.matrix(data)
     ?rownames(data) <- rownames
   }
-  if(nrow(data)!=nrow(vat@cell.props)){
+  vat <- loadAnalysis(vat,analysis.data = data, dims=c(1:ndims),key=key)
+  return(vat)
+}
+
+#' load analysis result manually
+#' @param vat VATEntity object
+#' @param analysis.data analysis data for cells
+#' @param dims the dim values of analysis result
+#' @param key key value in the anlaysis list
+#' @export
+#'
+#' @return new vat entity including new analysis result
+loadAnalysis <- function(vat, analysis.data, dims = c(1:2), key = "tSNE"){
+  if(nrow(analysis.data)!=nrow(vat@cell.props)){
     stop("The nrow of analsis data must equal with the nrow of vat@cell.props")
   }
-  data <- data[,c(1:ndims)]
-  colnames(data) <- getAnalysisColName(key,c(1:ndims))
-  data <- list(cell.values=data)
-  eval(parse(text=paste0("vat@analysis$",key," <- data")))
+  analysis.data <- analysis.data[,dims]
+  colnames(analysis.data) <- getAnalysisColName(key,dims)
+  analysis.data <- list(cell.values=analysis.data)
+  eval(parse(text=paste0("vat@analysis$",key," <- analysis.data")))
   return(vat)
 }
 
