@@ -8,6 +8,7 @@
 #'
 #' @return data matrix or sparseMatrix data
 #' @import Matrix
+#' @export
 #'
 #' @examples
 #' data <- loadCSVData("./filename.csv")

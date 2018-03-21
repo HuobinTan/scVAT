@@ -10,6 +10,8 @@
 #'
 #' @import shiny
 #' @import shinydashboard
+#' @import plotly
+#' @importFrom DT dataTableOutput renderDataTable
 #' @export
 #'
 #' @examples
@@ -20,6 +22,9 @@ startVATGUI<-function(data_name){
   #if(".assay.dataset" %in% globalObjects){
   #  oldData <- .GlobalEnv$.assay.dataset
   #}
+  require(shiny)
+  require(shinydashboard)
+  require(plotly)
   vat <- .GlobalEnv[[data_name]]
   avail.group <- c("Choose one"="",getPropMeta(vat,"Group"))
   avail.analysis.key <- c("Choose one" = "", getAnalysisKey(vat))
@@ -101,7 +106,7 @@ startVATGUI<-function(data_name){
                                )
                       ),
                       wellPanel(width=12,
-                        DTOutput("diffDataTable", width="100%")
+                                DT::dataTableOutput("diffDataTable", width="100%")
                       )
                     )
                   )
@@ -275,7 +280,7 @@ startVATGUI<-function(data_name){
           write.csv(diffData, file, row.names = FALSE)
         }
       )
-      output$diffDataTable <- renderDT({
+      output$diffDataTable <- DT::renderDataTable({
         input$diffDo
         if (!is.null(notify.id)) removeNotification(notify.id)
         notify.id <<- NULL

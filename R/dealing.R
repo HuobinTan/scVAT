@@ -11,7 +11,7 @@ addCellProp <- function(vat, cell.prop, prop.name, meta.key=NULL, meta.value=NUL
     stop("The cell.prop length must equal vat@cell.props's length")
   }
   vat@cell.props[,prop.name] <- cell.prop
-  vat@prop.meta <- AddPropMeta(vat@prop.meta, meta.key, meta.value)
+  vat@prop.meta <- addPropMeta(vat@prop.meta, meta.key, meta.value)
   return(vat)
 }
 
@@ -27,7 +27,7 @@ addGeneProp <- function(vat, gene.prop, prop.name, meta.key=NULL, meta.value=NUL
     stop("The gene.prop's length must equal vat@gene.props's length")
   }
   vat@gene.props[,prop.name] <- gene.prop
-  vat@prop.meta <- AddPropMeta(vat@prop.meta, meta.key, meta.value)
+  vat@prop.meta <- addPropMeta(vat@prop.meta, meta.key, meta.value)
   return(vat)
 }
 
@@ -37,13 +37,12 @@ addGeneProp <- function(vat, gene.prop, prop.name, meta.key=NULL, meta.value=NUL
 #' @param meta.value meta feature value
 #' @export
 addPropMeta <- function(prop.meta, meta.key, meta.value){
-  if(isEmpth(meta.key)) return(prop.meta)
+  if(isEmpty(meta.key)) return(prop.meta)
   old.meta.value <- prop.meta[[meta.key]]
   if(is.null(old.meta.value)){
     prop.meta[[meta.key]] <- meta.value
   }else{
-    is.in <- meta.value %in% old.meta.value
-    no.in.idx <- meta.value[which(!is.in)]
+    no.in.idx <- which(!(meta.value %in% old.meta.value))
     prop.meta[[meta.key]] <- c(old.meta.value, meta.value[no.in.idx])
   }
   return(prop.meta)

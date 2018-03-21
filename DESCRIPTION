@@ -18,5 +18,6 @@ Imports:
   irlba,
   Rtsne,
   cccd,
-  igraph
+  igraph,
+  DT
 RoxygenNote: 6.0.1

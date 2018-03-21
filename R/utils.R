@@ -1,3 +1,4 @@
+
 isEmpty <- function(var){
   if(is.null(var)) return(TRUE)
   if(is.na(var)) return(TRUE)

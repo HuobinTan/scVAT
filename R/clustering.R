@@ -3,7 +3,7 @@
 #' @param analysis.key analysis.key for clustering
 #' @param pc.num PC components for clustering
 #' @param cluster.name cell.props's column name saving cluster results
-#' @param k k-nearest graph's value, default 10, if 0, then set k = floor(sqrt(nrow(cells))/2)
+#' @param k k-nearest graph's value, default 100, if 0, then set k = floor(sqrt(nrow(cells))/2)
 #' @param dist.type default "euclidean"
 #' @param save.KNN whether or not saving kN, default TRUE (no implemented)
 #' @param verbose whether or not printing verbose, default TRUE
@@ -12,7 +12,7 @@
 #' @examples
 #' vat <- doCluster(vat)
 #'
-doCluster <- function(vat, analysis.key = "PCA", pc.num = 50, cluster.name = "cluster", k = 10, dist.type="euclidean", save.KNN = TRUE,verbose = TRUE, ...){
+doCluster <- function(vat, analysis.key = "PCA", pc.num = 50, cluster.name = "cluster", k = 100, dist.type="euclidean", save.KNN = TRUE,verbose = TRUE, ...){
   data <- getAnalysisData(vat,key = analysis.key, cols =c(1:pc.num))
   #get cell-cell euclidean distance matrix
   cell.dist <- as.matrix(dist(data))
