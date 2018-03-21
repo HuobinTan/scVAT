@@ -7,6 +7,9 @@
 #' @return
 #'
 #' @author thbin
+#' 
+#' @import shiny
+#' @import shinydashboard
 #'
 #' @examples
 #' 

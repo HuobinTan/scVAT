@@ -1,6 +1,17 @@
 #' do Unsupervised Clustering using kNN-graph
-#' 
-doCluster <- function(vat, analysis.key = "PCA", pc.num = 50, cluster.name = "cluster", k = 100, dist.type="euclidean", save.KNN = TRUE,verbose = TRUE, ...){
+#' @param vat vat entity
+#' @param analysis.key analysis.key for clustering
+#' @param pc.num PC components for clustering
+#' @param cluster.name cell.props's column name saving cluster results
+#' @param k k-nearest graph's value, default 10, if 0, then set k = floor(sqrt(nrow(cells))/2)
+#' @param dist.type default "euclidean"
+#' @param save.KNN whether or not saving kN, default TRUE (no implemented)
+#' @param verbose whether or not printing verbose, default TRUE
+#'
+#' @examples
+#' vat <- doCluster(vat)
+#'
+doCluster <- function(vat, analysis.key = "PCA", pc.num = 50, cluster.name = "cluster", k = 10, dist.type="euclidean", save.KNN = TRUE,verbose = TRUE, ...){
   data <- getAnalysisData(vat,key = analysis.key, cols =c(1:pc.num))
   #get cell-cell euclidean distance matrix
   cell.dist <- as.matrix(dist(data))
@@ -9,6 +20,13 @@ doCluster <- function(vat, analysis.key = "PCA", pc.num = 50, cluster.name = "cl
   vat <- addCellProp(vat, clust.result$cluster, cluster.name, meta.key="Group",meta.value = cluster.name)
   return(vat)
 }
+
+#' Building kNN Graph for clustering
+#' @param cell.dist cell distant matrix
+#' @param k kNN's k value
+#' @param dist.type distanct type
+#' @param verbose whether or not printing verbose, default
+#' @importFrom cccd nng
 
 buildKNNGraph <- function(cell.dist, k, dist.type, verbose=TRUE){
   if (k == 0){
@@ -26,14 +44,15 @@ buildKNNGraph <- function(cell.dist, k, dist.type, verbose=TRUE){
 }
 
 #' Clustering Graph
-#' 
-#' @param graph
+#'
+#' @param graph kNN graph
 #' @param graph.type can be jaccard, invlogweighted or dice. Default knn
-#' @param cell.dist
 #' @param community.detect can be louvain, infomap or markov. Default infomap
-#' @param k
+#' @param k k-value
+#' @import igraph
+#'
 clusterGraph <- function(	graph,  graph.type="knn", # can be threshold (binarise the distance matrix), jaccard or knn
-                           community.detect="infomap", 
+                           community.detect="infomap",
                            k = 0)
 {
   if(identical(toupper(community.detect), toupper("markov")))
@@ -60,9 +79,9 @@ clusterGraph <- function(	graph,  graph.type="knn", # can be threshold (binarise
   clist= lapply(1:n.clusters, f)
   m = igraph::modularity(graph, clusters)
   return (list("result"=r,
-               "method"=paste(graph.type, "-graph clustering [", community.detect,"]", sep=""), 
-               "clust.num"=n.clusters, 
-               "modularity"=m, 
-               "clust.list"=clist,		
+               "method"=paste(graph.type, "-graph clustering [", community.detect,"]", sep=""),
+               "clust.num"=n.clusters,
+               "modularity"=m,
+               "clust.list"=clist,
                "cluster"=clusters))
 }

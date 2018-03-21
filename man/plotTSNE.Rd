@@ -3,16 +3,31 @@
 \name{plotTSNE}
 \alias{plotTSNE}
 \title{plot tsne maps}
-\source{
-
-}
 \usage{
 plotTSNE(vat, title = NULL, group.id = NULL, gradient = FALSE,
   colors = NULL, source = "tsne", ...)
 }
 \arguments{
+\item{vat}{VAT Entity}
+
+\item{title}{plot's title}
+
 \item{group.id}{cell property for group}
+
+\item{gradient}{whether or not with gradient}
+
+\item{colors}{color palette}
+
+\item{source}{plot's data source for shinyui}
+
+\item{...}{other parameters for plot_ly}
+}
+\value{
+plot.ly object
 }
 \description{
 plot tsne maps
+}
+\examples{
+plotTSNE(vat, title="Example", group.id="cluster", gradient=FALSE)
 }

@@ -8,9 +8,13 @@ clusterGraph(graph, graph.type = "knn", community.detect = "infomap",
   k = 0)
 }
 \arguments{
+\item{graph}{kNN graph}
+
 \item{graph.type}{can be jaccard, invlogweighted or dice. Default knn}
 
 \item{community.detect}{can be louvain, infomap or markov. Default infomap}
+
+\item{k}{k-value}
 }
 \description{
 Clustering Graph

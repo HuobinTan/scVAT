@@ -96,11 +96,12 @@ getGenePropData <- function(vat, prop.name){
 }
 
 #' Calculating the expressiong's percent for some pattern's genes
-#' @param vat
+#' @param vat vat entity
 #' @param gene.pattern pattern expression for matching gene names
+#' @param prop.name the saved column name of cell.props
 #'
 #' @examples
-# vat <- setGenePercent(vat,gene.pattern="^mt-")
+#  vat <- setGenePercent(vat, gene.pattern="^mt-", prop.name="mt.percent")
 setGenePercent <- function(vat, gene.pattern, prop.name){
   gene.names <- vat@gene.props$name
   filter.genes <- grep(pattern=gene.pattern, gene.names, ignore.case = TRUE)

@@ -8,11 +8,19 @@ plotTwoGenes(vat, gene1, gene2, dims = c(1, 2), key = "tSNE",
   colors = c("lightgrey", "blue", "orange", "red"), ...)
 }
 \arguments{
+\item{vat}{vat entity}
+
+\item{gene1}{the first gene name for plot}
+
+\item{gene2}{the second gene name for plot}
+
 \item{dims}{length(dim)=2, 3 (2D or 3D)}
 
 \item{key}{analysis data key}
 
 \item{colors}{color palette}
+
+\item{gradient}{default FALSE}
 }
 \description{
 plot two gene expression based on the analysis result at the sametime

@@ -26,3 +26,6 @@ data matrix or sparseMatrix data
 \description{
 load data from csv file
 }
+\examples{
+data <- loadCSVData("./filename.csv")
+}

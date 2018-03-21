@@ -17,3 +17,6 @@ data sparseMatrix format
 \description{
 load data from H5 file
 }
+\examples{
+data <- loadH5Data("./filtered_gene_bc_matrices_h5.h5",genome="mm10",filter=TRUE, log=FLASE)
+}

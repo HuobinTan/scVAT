@@ -20,10 +20,11 @@
 #' @param top.num only return top.num results. Default is Inf, and return all results
 #' @param min.cells Minimum number of cells expressing the gene in at least min.cells. Default is 1
 #' @param verbose Show the progress bar
-#' 
-#' @return 
-#' p-value adjustment is performed using bonferroni correction based on the total number of genes in the dataset. 
-doDiffAnalysis <- function(vat, group1, group2 = NULL, group.key = "cluster", use.genes = NULL,  method = "t", 
+#' @import Matrix
+#'
+#' @return
+#' p-value adjustment is performed using bonferroni correction based on the total number of genes in the dataset.
+doDiffAnalysis <- function(vat, group1, group2 = NULL, group.key = "cluster", use.genes = NULL,  method = "t",
   min.logfc = 0.25, only.pos = FALSE, min.avg = 0.1,  min.diff.avg = -Inf, top.num = Inf, min.cells = 1, verbose = TRUE)
 {
   data <- getUseData(vat, use.genes=use.genes)
@@ -33,7 +34,7 @@ doDiffAnalysis <- function(vat, group1, group2 = NULL, group.key = "cluster", us
     min.diff.avg <- -Inf
     min.logfc <- 0
   }
-  
+
   if(!(group.key %in% colnames(vat@cell.props))){
     stop(sprintf("No '%s' group data, Please doCluster() or use another key!", group.key))
   }
@@ -47,35 +48,35 @@ doDiffAnalysis <- function(vat, group1, group2 = NULL, group.key = "cluster", us
   if(sum(group1 %in% group2) > 0){
     stop("Group1 and Group2 are duplicated!")
   }
-  
+
   cells1 <- which(vat@cell.props[, group.key] %in% group1)
   cells2 <- which(vat@cell.props[, group.key] %in% group2)
   if(length(cells1) < min.cells || length(cells2) < min.cells){
     stop("Too few cells in either group!")
   }
-  
+
   data1 <- data[use.genes, cells1, drop = F]
   data2 <- data[use.genes, cells2, drop = F]
-  
-  avg1 <- rowMeans(data1)
-  avg2 <- rowMeans(data2)
+
+  avg1 <- Matrix::rowMeans(data1)
+  avg2 <- Matrix::rowMeans(data2)
   diff.avg <- abs(avg1 - avg2)
   use.genes <- use.genes[intersect( union(which(avg1 > min.avg),which(avg2 > min.avg)), which(diff.avg > min.diff.avg) )]
   if (length(use.genes) == 0) {
     stop("No genes satisfy threshold, maybe adjust threshold: min.avg, min.dff.avg")
   }
-  
+
   log.avg1 <- log(Matrix::rowMeans(exp(data1)-1) + 1)
   log.avg2 <- log(Matrix::rowMeans(exp(data2)-1) + 1)
   log.fc <- log.avg1 - log.avg2
-  
+
   if (!only.pos){
     logfc.genes <- use.genes[which(abs(log.fc) > min.logfc)]
   }else{
     logfc.genes <- use.genes[which(log.fc > min.logfc)]
   }
   use.genes <- intersect(use.genes, logfc.genes)
-  
+
   if (method == "t") {
     result <- doTTest(vat, cells1, cells2, use.genes, verbose)
   } else if (method == "wilcox"){
@@ -88,10 +89,10 @@ doDiffAnalysis <- function(vat, group1, group2 = NULL, group.key = "cluster", us
   result$logFC <- round(log.fc[use.genes],4)
   result$avg1 <- round(avg1[use.genes],4)
   result$avg2 <- round(avg2[use.genes],4)
-  
+
   #?? about the parameter "n" for p.adjust, whether or not number of use.genes or  all genes? (as Aaron Lun)
   result$pvalue.adj <- p.adjust(result$pvalue, method = "bonferroni", n = nrow(vat@gene.props))
-  
+
   result <- result[order(result$pvalue, -result$logFC),]
   if(top.num < nrow(result) ){
     result <- result[c(1:top.num),]
@@ -117,15 +118,15 @@ doDiffAnalysis <- function(vat, group1, group2 = NULL, group.key = "cluster", us
 #' @param top.num only return top.num results. Default is Inf, and return all results
 #' @param min.cells Minimum number of cells expressing the gene in at least min.cells. Default is 1
 #' @param verbose Show the progress bar
-#' 
-#' @return 
-#' p-value adjustment is performed using bonferroni correction based on the total number of genes in the dataset. 
-doAllDiffAnalysis <- function(vat, group.key = "cluster", use.genes = NULL,  method = "t", 
+#'
+#' @return
+#' p-value adjustment is performed using bonferroni correction based on the total number of genes in the dataset.
+doAllDiffAnalysis <- function(vat, group.key = "cluster", use.genes = NULL,  method = "t",
                            min.logfc = 0.25, only.pos = FALSE, min.avg = 0.1,  min.diff.avg = -Inf, top.num = Inf, min.cells = 1, verbose = TRUE)
 {
   data <- getUseData(vat, use.genes=use.genes)
   if(is.null(use.genes)) use.genes <- rownames(data)
-  
+
   if(!(group.key %in% colnames(vat@cell.props))){
     stop(sprintf("No '%s' group data, Please doCluster() or use another key!", group.key))
   }
@@ -147,7 +148,7 @@ doAllDiffAnalysis <- function(vat, group.key = "cluster", use.genes = NULL,  met
     }, error = function(cond){return(NULL)})
     if(!is.null(group.diff[[i]])){
       group.diff[[i]] <- data.frame(cluster = group.id, group.diff[[i]])
-    } 
+    }
   }
   result <- do.call(rbind, group.diff)
   rownames(result) <- make.unique(as.character(result$gene),sep = "_")
@@ -157,11 +158,12 @@ doAllDiffAnalysis <- function(vat, group.key = "cluster", use.genes = NULL,  met
 
 #'do t-test for differential analysis
 #'
-#'@param vat
+#'@param vat vat entity
 #'@param cells1  the first group index
 #'@param cells2 the second group index
 #'@param use.genes the genes for  differential analysis
 #'@param verbose whether or not showing verbose, default TRUE
+#'@importFrom pbapply pbsapply
 #'
 #'@return p.value for test, rownames are use.genes
 #'
@@ -181,11 +183,12 @@ doTTest <- function(vat, cells1, cells2, use.genes, verbose=TRUE){
 
 #'do Wilcox Rank Sum test for differential analysis
 #'
-#'@param vat
+#'@param vat vat entity
 #'@param cells1  the first group index
 #'@param cells2 the second group index
 #'@param use.genes the genes for  differential analysis
 #'@param verbose whether or not showing verbose, default TRUE
+#'@importFrom pbapply pbsapply
 #'
 #'@return use.genes, p.value for test, rownames are use.genes
 #'
@@ -205,11 +208,13 @@ doWilcoxTest <- function(vat, cells1, cells2, use.genes, verbose=TRUE){
 
 #'call DESeq2 test for differential analysis
 #'
-#'@param vat
+#'@param vat entity
 #'@param cells1  the first group index
 #'@param cells2 the second group index
 #'@param use.genes the genes for  differential analysis
 #'@param verbose whether or not showing verbose, default TRUE
+#'@importFrom pbapply pbsapply
+#'@importFrom DESeq2 DESeqDataSetFromMatrix estimateSizeFactors estimateDispersions nbinomWaldTest results
 #'
 #'@return use.genes, p.value for test, rownames are use.genes
 #'
@@ -218,15 +223,15 @@ doDESeq2Test <- function(vat, cells1, cells2, use.genes, verbose=TRUE){
     source("https://bioconductor.org/biocLite.R")
     biocLite("DESeq2")
   }
-  
+
   data <- getUseData(vat,use.genes=use.genes,use.raw = TRUE)
   data <- data[,c(cells1,cells2)]
   if(is.null(use.genes)) use.genes <- rownames(data)
-  
+
   cell.props <- vat@cell.props[c(cells1,cells2),"name",drop=F]
   cell.props$group <- "Group1"
   cell.props$group[cells2] <- "Group2"
-  
+
   dds <- DESeq2::DESeqDataSetFromMatrix(countData = data, colData = cell.props, design= ~ group)
   dds <- DESeq2::estimateSizeFactors(dds)
   dds <- DESeq2::estimateDispersions(dds, fitType = "local")

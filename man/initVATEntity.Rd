@@ -5,13 +5,27 @@
 \title{initialize VAT Entity}
 \usage{
 initVATEntity(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
-  log.trans = TRUE, pseudocount = 1, cell.scale = FALSE,
-  scale.factor = 10000, verbose = TRUE)
+  cell.scale = FALSE, scale.factor = 0, log.trans = TRUE,
+  pseudocount = 1, verbose = TRUE)
 }
 \arguments{
 \item{data.raw}{data matrix}
 
 \item{title}{dataset name}
+
+\item{min.genes}{Include cells where more than this many genes are detected, default 0}
+
+\item{min.cells}{Include genes where more than this many cells are detected, default 0}
+
+\item{cell.scale}{whether or not normalizing by library size, default TRUE}
+
+\item{scale.factor}{multiple factor for cell.scale, default 0, using the mean for library size}
+
+\item{log.trans}{whether or not log-transform (log(p+pseudocount)), default TRUE}
+
+\item{verbose}{whether or not printing verbose, default TRUE}
+
+\item{pseducount}{pseducount for log-transform, default 1}
 }
 \description{
 initialize VAT Entity

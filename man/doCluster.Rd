@@ -5,9 +5,30 @@
 \title{do Unsupervised Clustering using kNN-graph}
 \usage{
 doCluster(vat, analysis.key = "PCA", pc.num = 50,
-  cluster.name = "cluster", k = 100, dist.type = "euclidean",
+  cluster.name = "cluster", k = 10, dist.type = "euclidean",
   save.KNN = TRUE, verbose = TRUE, ...)
+}
+\arguments{
+\item{vat}{vat entity}
+
+\item{analysis.key}{analysis.key for clustering}
+
+\item{pc.num}{PC components for clustering}
+
+\item{cluster.name}{cell.props's column name saving cluster results}
+
+\item{k}{k-nearest graph's value, default 10, if 0, then set k = floor(sqrt(nrow(cells))/2)}
+
+\item{dist.type}{default "euclidean"}
+
+\item{save.KNN}{whether or not saving kN, default TRUE (no implemented)}
+
+\item{verbose}{whether or not printing verbose, default TRUE}
 }
 \description{
 do Unsupervised Clustering using kNN-graph
+}
+\examples{
+vat <- doCluster(vat)
+
 }

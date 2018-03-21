@@ -7,7 +7,11 @@
 setGenePercent(vat, gene.pattern, prop.name)
 }
 \arguments{
+\item{vat}{vat entity}
+
 \item{gene.pattern}{pattern expression for matching gene names}
+
+\item{prop.name}{the saved column name of cell.props}
 }
 \description{
 Calculating the expressiong's percent for some pattern's genes

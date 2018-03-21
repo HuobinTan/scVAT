@@ -5,12 +5,25 @@
 \title{plot gene expression based on the analysis result}
 \usage{
 plotGene(vat, genes, dims = c(1, 2), key = "tSNE", gradient = TRUE,
-  colors = c("lightgrey", "blue"), ...)
+  colors = c("lightgrey", "blue"), show.title = TRUE,
+  show.entity.title = TRUE, ...)
 }
 \arguments{
+\item{vat}{vat entity}
+
+\item{genes}{gene's name for plot}
+
 \item{dims}{length(dim)=2, 3 (2D or 3D)}
 
 \item{key}{analysis data key}
+
+\item{gradient}{default FALSE}
+
+\item{colors}{color palette}
+
+\item{show.title}{whether or not show title as gene's name}
+
+\item{show.entity.title}{whether or not show entity name in the title}
 }
 \description{
 plot gene expression based on the analysis result
