@@ -17,7 +17,6 @@
 #' @exportClass VATEntity
 #' @import Rcpp
 #' @import methods
-#' @useDynLib scVAT
 
 VATEntity <- methods::setClass(
   "VATEntity",
