@@ -7,12 +7,13 @@
 #' @return
 #'
 #' @author thbin
-#' 
+#'
 #' @import shiny
 #' @import shinydashboard
+#' @export
 #'
 #' @examples
-#' 
+#'
 startVATGUI<-function(data_name){
   #public data pools
   #globalObjects = ls(.GlobalEnv)
@@ -76,7 +77,7 @@ startVATGUI<-function(data_name){
                        )
                      )
                    )
-                   
+
           ),
           tabItem(tabName="diffPage",
                   fluidRow(
@@ -100,7 +101,7 @@ startVATGUI<-function(data_name){
                                )
                       ),
                       wellPanel(width=12,
-                        DTOutput("diffDataTable", width="100%")  
+                        DTOutput("diffDataTable", width="100%")
                       )
                     )
                   )
@@ -132,18 +133,18 @@ startVATGUI<-function(data_name){
       )
     ),
     server <- function(input, output, session){
-      
+
       notify.id <- NULL
-      
+
       data <- reactive(
         eval(parse(text=data_name))
       )
-      
+
       output$tsnePlot <- renderPlotly({
         input$refreshTsne
         plotTSNE(vat,group.id = input$tsneGroup, source="tsneP")
       })
-      
+
       #Start Manual Clustering (tSNE)
       output$tsneClusterPlot <- renderPlotly({
         input$refreshTsne
@@ -161,7 +162,7 @@ startVATGUI<-function(data_name){
         vat@cell.props$manual.cluster <<- 0
       })
       #End Manual Clustering (tSNE)
-      
+
       #Start Analysis Visualization
       output$analysisPlot <- renderPlotly({
         key <- input$analysisKey
@@ -173,7 +174,7 @@ startVATGUI<-function(data_name){
         if(length(dims)<2 || length(dims)>3){
           return()
         }
-        
+
         gene1 <- input$analysisGene1
         gene2 <- input$analysisGene2
         colors <- input$analysisColor
@@ -189,16 +190,16 @@ startVATGUI<-function(data_name){
         }else{
           gene1 <- strsplit(gene1,split=",")[[1]]
           if(input$analysisMultiPlot && length(dims)==2){#3d plot.ly doesn't work!
-            plotMultipleGenes(vat, gene1, nrows = input$analysisPlotRows, dims=dims, 
-                              key = key, gradient = input$analysisGradient, 
+            plotMultipleGenes(vat, gene1, nrows = input$analysisPlotRows, dims=dims,
+                              key = key, gradient = input$analysisGradient,
                               colors = colors[1:2],size=size, sizes=sizes)
           }else{
             if(isEmpty(gene2)){
-              plotGene(vat, gene1, dims=dims, 
+              plotGene(vat, gene1, dims=dims,
                        key = key, gradient = input$analysisGradient,
                        colors = colors[1:2],size=size, sizes=sizes)
             }else{
-              plotTwoGenes(vat, gene1, gene2, dims=dims, 
+              plotTwoGenes(vat, gene1, gene2, dims=dims,
                            key = key,colors=colors,size=size, sizes=sizes)
             }
           }
@@ -214,7 +215,7 @@ startVATGUI<-function(data_name){
         selectInput("plotDims", "Plot Dims",dims, multiple=TRUE)
       })
       #End Analysis Visualization
-      
+
       #Start Defferential Analysis
       output$chooseDiffGroup1 <- renderUI({
         group.key <- input$diffGroup
@@ -282,7 +283,7 @@ startVATGUI<-function(data_name){
       }#,options=list(searching=FALSE,pageLength = 20)
       )
       #End Defferential Analysis
-      
+
       session$onSessionEnded(function(){
         .GlobalEnv[[data_name]] <- vat
         stopApp()

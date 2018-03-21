@@ -1,9 +1,10 @@
 #' do PCA using irlba library
-#' 
-#' @param vat 
+#'
+#' @param vat vat entity
 #' @param pc.num default 50
 #' @param use.genes run PCA using the genes. if NULL, using vat@use.genes. default NULL
 #' @importFrom irlba prcomp_irlba
+#' @export
 doPCA <- function(vat, pc.num = 50, use.genes = NULL, ...){
   data <- getUseData(vat, use.genes=use.genes)
   pc.num <- min(pc.num, nrow(data) - 1)
@@ -18,11 +19,12 @@ doPCA <- function(vat, pc.num = 50, use.genes = NULL, ...){
 }
 
 #' do tSNE using Rtsne library
-#' 
+#'
 #' @param vat vat entity
 #' @param dims tSNE dimension
 #' @importFrom Rtsne Rtsne
-#' 
+#' @export
+#'
 doTSNE <- function(vat, dims = 2, analysis.key = "PCA", use.col = 50, ...){
   data <- getAnalysisData(vat,key = analysis.key, cols =c(1:use.col))
   tsne <- Rtsne::Rtsne(as.matrix(data), dims = dims, ...)

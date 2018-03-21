@@ -37,6 +37,7 @@ loadCSVData <- function(filename, gene.names=NULL, cell.names=NULL, gene.in.row=
 #' @return data sparseMatrix format
 #' @import Matrix
 #' @importFrom rhdf5 h5read
+#' @export
 #'
 #' @examples
 #' data <- loadH5Data("./filtered_gene_bc_matrices_h5.h5",genome="mm10",filter=TRUE, log=FLASE)
@@ -64,6 +65,7 @@ loadH5Data <- function(filename, genome=NULL)
 #' @param log.trans whether or not log-transform (log(p+pseudocount)), default TRUE
 #' @param pseducount pseducount for log-transform, default 1
 #' @param verbose whether or not printing verbose, default TRUE
+#' @export
 #'
 #' @import Matrix
 initVATEntity <- function(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
@@ -125,6 +127,7 @@ initVATEntity <- function(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
 #' @param filename csv filename
 #' @param ndims the dim of analysis result
 #' @param key key value in the anlaysis list
+#' @export
 #'
 #' @return new vat entity including new analysis result
 loadAnalsisFromCSV <- function(vat, filename, ndims = 2, key = "tSNE", ...){

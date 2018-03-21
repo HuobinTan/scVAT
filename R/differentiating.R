@@ -21,6 +21,7 @@
 #' @param min.cells Minimum number of cells expressing the gene in at least min.cells. Default is 1
 #' @param verbose Show the progress bar
 #' @import Matrix
+#' @export
 #'
 #' @return
 #' p-value adjustment is performed using bonferroni correction based on the total number of genes in the dataset.
@@ -118,7 +119,7 @@ doDiffAnalysis <- function(vat, group1, group2 = NULL, group.key = "cluster", us
 #' @param top.num only return top.num results. Default is Inf, and return all results
 #' @param min.cells Minimum number of cells expressing the gene in at least min.cells. Default is 1
 #' @param verbose Show the progress bar
-#'
+#' @export
 #' @return
 #' p-value adjustment is performed using bonferroni correction based on the total number of genes in the dataset.
 doAllDiffAnalysis <- function(vat, group.key = "cluster", use.genes = NULL,  method = "t",

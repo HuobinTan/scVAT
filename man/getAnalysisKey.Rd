@@ -6,6 +6,9 @@
 \usage{
 getAnalysisKey(vat)
 }
+\arguments{
+\item{vat}{vat entity}
+}
 \description{
 get available analysis key name
 }

@@ -8,6 +8,7 @@
 #' @param save.KNN whether or not saving kN, default TRUE (no implemented)
 #' @param verbose whether or not printing verbose, default TRUE
 #'
+#' @export
 #' @examples
 #' vat <- doCluster(vat)
 #'
@@ -27,6 +28,7 @@ doCluster <- function(vat, analysis.key = "PCA", pc.num = 50, cluster.name = "cl
 #' @param dist.type distanct type
 #' @param verbose whether or not printing verbose, default
 #' @importFrom cccd nng
+#' @export
 
 buildKNNGraph <- function(cell.dist, k, dist.type, verbose=TRUE){
   if (k == 0){

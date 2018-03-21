@@ -9,6 +9,7 @@
 #' @param ... other parameters for plot_ly
 #'
 #' @return plot.ly object
+#' @export
 #'
 #' @examples
 #' plotTSNE(vat, title="Example", group.id="cluster", gradient=FALSE)
@@ -21,6 +22,18 @@ plotTSNE <- function(vat, title=NULL, group.id = NULL, gradient = FALSE, colors 
 }
 
 #' plot PC maps
+#' #'
+#' @param vat VAT Entity
+#' @param x.pc X-axis's PC
+#' @param y.pc X-axis's PC
+#' @param z.pc Z-axis's PC
+#' @param title plot's title
+#' @param colors color palette
+#' @param source plot's data source for shinyui
+#' @param ... other parameters for plot_ly
+#'
+#' @return plot.ly object
+#' @export
 plotPC <- function(vat, x.pc, y.pc, z.pc=NULL, title=NULL, color="black", source="pca",...){
   plotAnalysis(vat=vat,dims=c(x.pc, y.pc, z.pc), title=title, key="PCA",colors=color,...)
 }
@@ -34,6 +47,7 @@ plotPC <- function(vat, x.pc, y.pc, z.pc=NULL, title=NULL, color="black", source
 #' @param colors color palette
 #' @param show.title whether or not show title as gene's name
 #' @param show.entity.title whether or not show entity name in the title
+#' @export
 #'
 plotGene <- function(vat, genes, dims=c(1,2), key = "tSNE",
                      gradient = TRUE, colors=c("lightgrey","blue"),
@@ -67,6 +81,7 @@ plotGene <- function(vat, genes, dims=c(1,2), key = "tSNE",
 #' @param key analysis data key
 #' @param gradient default FALSE
 #' @param colors color palette
+#' @export
 #'
 plotMultipleGenes <- function(vat, genes, nrows=2, dims=c(1,2), key = "tSNE", gradient = TRUE, colors=c("lightgrey","blue"),...){
   plots <- lapply(genes, FUN=function(gene){
@@ -86,6 +101,7 @@ plotMultipleGenes <- function(vat, genes, nrows=2, dims=c(1,2), key = "tSNE", gr
 #' @param key analysis data key
 #' @param gradient default FALSE
 #' @param colors color palette
+#' @export
 #'
 plotTwoGenes <- function(vat, gene1, gene2, dims=c(1,2), key = "tSNE",
                          colors=c("lightgrey","blue","orange","red"),...){
@@ -119,6 +135,7 @@ plotTwoGenes <- function(vat, gene1, gene2, dims=c(1,2), key = "tSNE",
 #' @param colors color palette, if no color.data, uses colors[1]
 #' @param source plot id
 #' @importFrom plotly plot_ly
+#' @export
 #'
 #' @return p
 plotAnalysis <- function(vat, dims = c(1:2), title=NULL, key="tSNE", color.data = NULL,

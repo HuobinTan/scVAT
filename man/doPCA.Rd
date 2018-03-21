@@ -7,7 +7,7 @@
 doPCA(vat, pc.num = 50, use.genes = NULL, ...)
 }
 \arguments{
-\item{vat}{}
+\item{vat}{vat entity}
 
 \item{pc.num}{default 50}
 

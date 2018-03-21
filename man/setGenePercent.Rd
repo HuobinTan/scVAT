@@ -2,7 +2,7 @@
 % Please edit documentation in R/dealing.R
 \name{setGenePercent}
 \alias{setGenePercent}
-\title{Calculating the expressiong's percent for some pattern's genes}
+\title{Calculating the expression's percent for some pattern's genes}
 \usage{
 setGenePercent(vat, gene.pattern, prop.name)
 }
@@ -14,5 +14,8 @@ setGenePercent(vat, gene.pattern, prop.name)
 \item{prop.name}{the saved column name of cell.props}
 }
 \description{
-Calculating the expressiong's percent for some pattern's genes
+Calculating the expression's percent for some pattern's genes
+}
+\examples{
+vat <- setGenePercent(vat, gene.pattern="^mt-", prop.name="mt.percent")
 }

@@ -11,6 +11,20 @@ It stores all contents including data, annotations, analysis, etc.
 \section{Slots}{
 
 \describe{
-\item{\code{}}{}
+\item{\code{title}}{VAT entity's title}
+
+\item{\code{data}}{The normalized expression matrix}
+
+\item{\code{data.raw}}{The raw expression matrix}
+
+\item{\code{gene.props}}{Gene's Properties}
+
+\item{\code{cell.props}}{Cell's Properties}
+
+\item{\code{prop.meta}}{Property's meta features}
+
+\item{\code{use.genes}}{used genes for analysis}
+
+\item{\code{analysis}}{Analysis data list}
 }}
 

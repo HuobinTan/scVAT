@@ -6,6 +6,11 @@
 \usage{
 getAnalysisColnames(vat, key = "tSNE")
 }
+\arguments{
+\item{vat}{vat entity}
+
+\item{key}{analysis key, default tSNE}
+}
 \description{
 get availbale analysis data colnames
 }

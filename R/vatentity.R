@@ -1,13 +1,22 @@
 #' The VAT Entity Class
-#' 
+#'
 #' The VAT entity is the core data structure for VAT pipeline.
 #' It stores all contents including data, annotations, analysis, etc.
-#' 
-#' @slot 
-#' 
+#'
+#' @slot title VAT entity's title
+#' @slot data The normalized expression matrix
+#' @slot data.raw The raw expression matrix
+#' @slot gene.props Gene's Properties
+#' @slot cell.props Cell's Properties
+#' @slot prop.meta Property's meta features
+#' @slot use.genes used genes for analysis
+#' @slot analysis Analysis data list
+#'
 #' @name VATEntity
 #' @rdname VATEntity
 #' @exportClass VATEntity
+#' @import Rcpp
+#' @import methods
 #' @useDynLib scVAT
 
 VATEntity <- methods::setClass(
