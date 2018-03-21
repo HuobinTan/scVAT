@@ -131,13 +131,13 @@ initVATEntity <- function(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
 #' @export
 #'
 #' @return new vat entity including new analysis result
-loadAnalsisFromCSV <- function(vat, filename, ndims = 2, key = "tSNE", ...){
+loadAnalysisFromCSV <- function(vat, filename, ndims = 2, key = "tSNE", ...){
   data <- read.csv(filename,...)
   if((ndims + 1) == ncol(data)){
     rownames <- data[,1]
     data <- data[,-1]
     data <- as.matrix(data)
-    rownames(data) <- rownames
+    ?rownames(data) <- rownames
   }
   if(nrow(data)!=nrow(vat@cell.props)){
     stop("The nrow of analsis data must equal with the nrow of vat@cell.props")
