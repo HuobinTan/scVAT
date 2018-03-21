@@ -5,7 +5,7 @@
 \title{initialize VAT Entity}
 \usage{
 initVATEntity(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
-  cell.scale = FALSE, scale.factor = 0, log.trans = TRUE,
+  cell.scale = TRUE, scale.factor = 0, log.trans = TRUE,
   pseudocount = 1, verbose = TRUE)
 }
 \arguments{

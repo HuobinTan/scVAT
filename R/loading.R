@@ -70,7 +70,7 @@ loadH5Data <- function(filename, genome=NULL)
 #'
 #' @import Matrix
 initVATEntity <- function(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
-                          cell.scale = FALSE, scale.factor = 0,
+                          cell.scale = TRUE, scale.factor = 0,
                           log.trans = TRUE, pseudocount = 1,
                           verbose = TRUE){
   if(verbose) logging("create VAT Entity...")
@@ -103,14 +103,14 @@ initVATEntity <- function(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
   if(verbose) logging("Scaling and Normalizing data...")
   entity@data <- entity@data.raw
   if(cell.scale){
-    index <- c(1:ncol(entity@cell.props))
+    index <- c(1:nrow(entity@cell.props))
     if(scale.factor==0){
-      scale.factor <- mean(entity@cell.props$umi.nums)
+      scale.factor <- mean(entity@cell.props$umi)
     }
 
     if(verbose) ulapply <- pbapply::pblapply
     else ulapply <- lapply
-    entity@data <- ulapply(index, function(x){return(entity@data[,x] * scale.factor /entity@cell.props$umi.nums[x])})
+    entity@data <- ulapply(index, function(x){return(entity@data[,x] * scale.factor /entity@cell.props$umi[x])})
 
     entity@data <- do.call("cbind", entity@data)
     entity@data <- as(entity@data,"sparseMatrix")
