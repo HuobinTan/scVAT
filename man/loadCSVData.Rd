@@ -4,24 +4,26 @@
 \alias{loadCSVData}
 \title{load data from csv file}
 \usage{
-loadCSVData(filename, gene.names = NULL, cell.names = NULL,
-  gene.in.row = TRUE, to.sparseMatrix = TRUE, ...)
+loadCSVData(filename, gene.index = 1, cell.index = 1, gene.names = NULL,
+  cell.names = NULL, gene.in.row = TRUE, ...)
 }
 \arguments{
 \item{filename}{csv file names}
 
-\item{gene.names}{set rownames=gene.names, if null, using the first column as gene names. default null}
+\item{gene.index}{gene name's subscript}
 
-\item{cell.names}{set colnames=cell.names, if null, using the header as cell names. default null}
+\item{cell.index}{cell name's subscript}
+
+\item{gene.names}{set rownames=gene.names, default NULL, using the gene.index}
+
+\item{cell.names}{set colnames=cell.names, default NULL, using the cell.index}
 
 \item{gene.in.row}{gene store in row, default TRUE}
-
-\item{to.sparseMatrix}{if TRUE, saving data as sparseMatrix, otherwise matrix. default TRUE}
 
 \item{...}{see also read.csv}
 }
 \value{
-data matrix or sparseMatrix data
+data sparseMatrix data
 }
 \description{
 load data from csv file

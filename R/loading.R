@@ -1,48 +1,83 @@
 #' load data from csv file
 #' @param filename csv file names
-#' @param gene.names set rownames=gene.names, if null, using the first column as gene names. default null
-#' @param cell.names set colnames=cell.names, if null, using the header as cell names. default null
+#' @param gene.index gene name's subscript
+#' @param cell.index cell name's subscript
+#' @param gene.names set rownames=gene.names, default NULL, using the gene.index
+#' @param cell.names set colnames=cell.names, default NULL, using the cell.index
 #' @param gene.in.row gene store in row, default TRUE
-#' @param to.sparseMatrix if TRUE, saving data as sparseMatrix, otherwise matrix. default TRUE
 #' @param ... see also read.csv
 #'
-#' @return data matrix or sparseMatrix data
+#' @return data sparseMatrix data
 #' @import Matrix
 #' @export
 #'
 #' @examples
 #' data <- loadCSVData("./filename.csv")
-loadCSVData <- function(filename, gene.names=NULL, cell.names=NULL, gene.in.row=TRUE, to.sparseMatrix=TRUE,...){
-  data <- read.csv(filename, ...)
-  if(!gene.in.row) data <- t(data)
-  if(is.null(gene.names)){
-    gene.names <- data[,1]
-    data <- data[,-1]
+loadCSVData <- function(filename, gene.index = 1, cell.index = 1,
+                        gene.names=NULL, cell.names=NULL, gene.in.row=TRUE,...){
+  if( (gene.index <= 0)&&(is.null(gene.names)) ){
+    stop("Must set gene.index or gene.names")
+  }
+  if( (cell.index <= 0)&&(is.null(cell.names)) ){
+    stop("Must set cell.index or cell.names")
+  }
+  data <- read.csv(filename, header=FALSE, stringsAsFactors = FALSE, ...)
+  if(gene.in.row){
+    if(gene.index >= 0 ){
+      if(is.null(gene.names)){
+        gene.names <- data[, gene.index]
+        if(cell.index>=0){
+          gene.names <- gene.names[-cell.index]
+        }
+      }
+      data <- data[, -gene.index]
+    }
+    if(cell.index >= 0){
+      if(is.null(cell.names)){
+        cell.names <- data[cell.index, ]
+      }
+      data <- data[-cell.index, ]
+    }
+  }else{
+    if(gene.index >= 0 ){
+      if(is.null(gene.names)){
+        gene.names <- data[gene.index,]
+      }
+      if(cell.index>=0){
+        gene.names <- gene.names[-cell.index]
+      }
+      data <- data[-gene.index, ]
+    }
+    if(cell.index >= 0){
+      if(is.null(cell.names)){
+        cell.names <- data[, cell.index]
+      }
+      data <- data[, -cell.index]
+    }
+    data <- t(data)
   }
   data <- as.matrix(data)
-  if(to.sparseMatrix){
-    data <- Matrix::Matrix(data, sparse=TRUE)
-    #data <- as(data, "sparseMatrix")
+  if(is.character(data[1,1])){
+    data <- matrix(as.numeric(data),nrow=nrow(data))
   }
+  data <- Matrix::Matrix(data, sparse=TRUE)
+  #data <- as(data, "sparseMatrix")
 
   rownames(data) <- gene.names
-  if(!is.null(cell.names)){
-    colnames(data) <- cell.names
-  }
+  colnames(data) <- cell.names
   return(data)
 }
 
 #' load data from H5 file
-#' @param filename h5 file name
+#' @param filename h5 file name for 10X
 #' @param genome h5group genome name, default NULL, returns first group
-#' @return data sparseMatrix format
 #' @import Matrix
 #' @importFrom rhdf5 h5read
 #' @export
 #'
 #' @examples
-#' data <- loadH5Data("./filtered_gene_bc_matrices_h5.h5",genome="mm10",filter=TRUE, log=FLASE)
-loadH5Data <- function(filename, genome=NULL)
+#' data <- loadH5Data("./filtered_gene_bc_matrices_h5.h5",genome="mm10")
+load10XH5 <- function(filename, genome=NULL)
 {
   if(is.null(genome)){
     dset <- h5read(filename,"/")[[1]]
@@ -53,6 +88,43 @@ loadH5Data <- function(filename, genome=NULL)
   data <- Matrix::sparseMatrix(i=dset$indices + 1,p=dset$indptr,
                        x=dset$data, dims=dset$shape,
                        dimnames = list(dset$gene_names,dset$barcodes))
+  return(data)
+}
+
+#' load data from 10x path (including barcodes.tsv, genes.tsv and matrix.mtx)
+#' @param path directory stroed in 10x data
+#' @import Matrix
+#' @export
+#'
+#' @examples
+#' data <- loadH5Data("./filtered_gene_bc_matrices/mm10")
+load10XPath <- function(path)
+{
+  if(!dir.exists(path)){
+    stop("File path doesn't exist")
+  }
+  if(!grepl("\\/$", path)){
+    path <- paste(path, "/", sep = "")
+  }
+  barcodes.file <- paste0(path, "barcodes.tsv")
+  genes.file <- paste0(path, "genes.tsv")
+  data.file <- paste0(path, "matrix.mtx")
+  if(!file.exists(barcodes.file)){
+    stop("Barcodes file is lost")
+  }
+  if(!file.exists(genes.file)){
+    stop("Genes file is lost")
+  }
+  if(!file.exists(data.file)){
+    stop("Expression file is lost")
+  }
+  cells <- readLines(barcodes.file)
+  genes <- readLines(genes.file)
+  genes <- strsplit(genes,"\t")
+  genes <- do.call(rbind, genes)[, 2]#1-gene id, 2-gene names
+  data <- Matrix::readMM(data.file)
+  rownames(data) <- genes
+  colnames(data) <- cells
   return(data)
 }
 
