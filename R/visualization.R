@@ -73,7 +73,7 @@ plotGene <- function(vat, genes, dims=c(1,2), key = "tSNE",
                            gradient = gradient, colors = colors, ...)
 }
 
-#' plot some gene expressions based on the analysis result
+#' plot some gene expressions (sometime show many plots) based on the analysis result
 #' @param vat vat entity
 #' @param genes gene's name for plot
 #' @param nrows number of rows for plot
@@ -83,48 +83,98 @@ plotGene <- function(vat, genes, dims=c(1,2), key = "tSNE",
 #' @param colors color palette
 #' @export
 #'
-plotMultipleGenes <- function(vat, genes, nrows=2, dims=c(1,2), key = "tSNE", gradient = TRUE, colors=c("lightgrey","blue"),...){
+plotGenes <- function(vat, genes, nrows=2, dims=c(1,2), key = "tSNE", gradient = TRUE, colors=c("lightgrey","blue"),...){
   plots <- lapply(genes, FUN=function(gene){
-    p <- plotGene(vat,gene,dims=dims,key=key,gradient=gradient,colors=colors,...)
+    p <- plotGene(vat, gene, dims=dims, key=key, gradient=gradient, show.title=FALSE, colors=colors,...)
   })
   title <- paste0(vat@title,"'s ", paste(genes,sep=", ",collapse=", "))
-  p <- subplot(plots,nrows=nrows) %>% layout(showlegend=FALSE) %>% layout(title = title)
+  p <- subplot(plots, nrows=nrows) %>% layout(showlegend=FALSE) %>% layout(title = title)
   p$elementId <- NULL
   p
 }
-#' plot two gene expression based on the analysis result at the sametime
+#' plot two gene expression based on the analysis result at a map
 #'
 #' @param vat vat entity
 #' @param gene1 the first gene name for plot
 #' @param gene2 the second gene name for plot
 #' @param dims length(dim)=2, 3 (2D or 3D)
 #' @param key analysis data key
-#' @param gradient default FALSE
 #' @param colors color palette
 #' @export
 #'
 plotTwoGenes <- function(vat, gene1, gene2, dims=c(1,2), key = "tSNE",
                          colors=c("lightgrey","blue","orange","red"),...){
 
-  if(length(colors)!=4){
-    stop("The length of colors must equal 4.")
-  }
-  gene1.pos <- which(getUseData(vat,gene1,drop=TRUE) > 0)
-  gene2.pos <- which(getUseData(vat,gene2,drop=TRUE) > 0)
+  #if(length(colors)!=4){
+  #  stop("The length of colors must equal 4.")
+  #}
+  gene1.pos <- which(Matrix::colSums(getUseData(vat, gene1, drop=FALSE)) > 0)
+  gene2.pos <- which(Matrix::colSums(getUseData(vat, gene2, drop=FALSE)) > 0)
   both.pos <- intersect(gene1.pos, gene2.pos)
 
   gene.data <- rep("None",times=nrow(vat@cell.props))
+  gene1 <- paste(gene1, sep=", ",collapse=", ")
   gene.data[gene1.pos] <- gene1
+  gene2 <- paste(gene2, sep=", ",collapse=", ")
   gene.data[gene2.pos] <- gene2
-  gene12 <- paste(gene1, gene2, sep=", ")
+  gene12 <- paste(gene1, gene2, sep=", ",collapse = ", ")
   gene.data[both.pos] <- gene12
   gene.data <- factor(gene.data,levels=c("None",gene1,gene2,gene12))
-  title <- gene12
 
+  title <- gene12
   plotAnalysis (vat, dims = dims, title=title, key = key, color.data = gene.data,
                 gradient = FALSE, colors = colors,...)
 }
 
+#' plot three gene expression based on the analysis result at a map
+#'
+#' @param vat vat entity
+#' @param gene1 the first gene name for plot
+#' @param gene2 the second gene name for plot
+#' @param gene3 the third gene name for plot
+#' @param dims length(dim)=2, 3 (2D or 3D)
+#' @param key analysis data key
+#' @param colors color palette (more colors??8 colors)
+#' @export
+#'
+plotThreeGenes <- function(vat, gene1, gene2, gene3, dims=c(1,2), key = "tSNE",
+                         colors=c("lightgrey","blue","orange","green",
+                                  "brown","purple","yellow","red"),...){
+  gene.data <- rep("None",times=nrow(vat@cell.props))
+  genes <- list(gene1,gene2,gene3)
+
+  gene1 <- paste(gene1, sep=", ",collapse=", ")
+  gene2 <- paste(gene2, sep=", ",collapse=", ")
+  gene3 <- paste(gene3, sep=", ",collapse=", ")
+  gene1.2 <- paste(gene1, gene2, sep=", ",collapse=", ")
+  gene1.3 <- paste(gene1, gene3, sep=", ",collapse=", ")
+  gene2.3 <- paste(gene2, gene3, sep=", ",collapse=", ")
+  gene1.2.3 <- paste(gene1, gene2, gene3, sep=", ",collapse=", ")
+  gene.level <- c("None" ,gene1, gene2, gene3, gene1.2, gene1.3, gene2.3, gene1.2.3)
+
+  genes.pos <- lapply(c(1:3), function(x){
+    return (which( colSums(getUseData(vat, genes[[x]], drop=FALSE)) > 0))
+  })
+  for(i in c(1:3)){
+    gene.data[genes.pos[[i]]] <- gene.level[i+1]
+  }
+  gene.pos1.2 <- intersect(genes.pos[[1]], genes.pos[[2]])
+  gene.pos1.3 <- intersect(genes.pos[[1]], genes.pos[[3]])
+  gene.pos2.3 <- intersect(genes.pos[[2]], genes.pos[[3]])
+  gene.pos1.2.3 <- Reduce(intersect, genes.pos)
+  #gene.pos1.2 <- setdiff(gene.pos1.2, gene.pos1.2.3)
+  #gene.pos1.3 <- setdiff(gene.pos1.3, gene.pos1.2.3)
+  #gene.pos2.3 <- setdiff(gene.pos2.3, gene.pos1.2.3)
+  gene.data[gene.pos1.2] <- gene.level[5]
+  gene.data[gene.pos1.3] <- gene.level[6]
+  gene.data[gene.pos2.3] <- gene.level[7]
+  gene.data[gene.pos1.2.3] <- gene.level[8]
+
+  gene.data <- factor(gene.data, levels=gene.level)
+  title <- gene1.2.3
+  plotAnalysis (vat, dims = dims, title=title, key = key, color.data = gene.data,
+                gradient = FALSE, colors = colors,...)
+}
 #' plot using analysis data
 #' @param vat vat entity
 #' @param dims data analysis, dimension index, default c(1:2)
@@ -147,7 +197,7 @@ plotAnalysis <- function(vat, dims = c(1:2), title=NULL, key="tSNE", color.data 
     stop("Only plot 2D or 3D maps")
   }
   twoD <- (length(dims)==2)
-  if(!is.null(title) && title=="") title <- vat@title
+  if (is.null(title)) title <- vat@title
   plot.data <- getAnalysisData(vat, key, cols =dims,as.data.frame = TRUE)
   if(twoD){
     colnames(plot.data) <- c("X","Y")

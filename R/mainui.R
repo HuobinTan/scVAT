@@ -35,10 +35,10 @@ startVATGUI<-function(data_name){
       dashboardHeader(title = "Single-Cell Visualization Analysis Toolkit",titleWidth = 450), skin="black",
       dashboardSidebar(
         sidebarMenu(
-          menuItem("tSNE Plot",tabName="tsnePage",icon=icon("spinner")),
-          menuItem("Manual Clustering (tSNE)", tabName="tsneClusterPage",icon=icon("certificate")),
-          menuItem("Differential Analysis", tabName="diffPage",icon=icon("compass")),
           menuItem("Analysis Visualization", tabName="analysisPage",icon=icon("spinner"))
+          ,menuItem("tSNE Plot",tabName="tsnePage",icon=icon("spinner"))
+          ,menuItem("Manual Clustering", tabName="tsneClusterPage",icon=icon("certificate"))
+          ,menuItem("Differential Analysis", tabName="diffPage",icon=icon("compass"))
         )
       ),
       dashboardBody(
@@ -63,15 +63,15 @@ startVATGUI<-function(data_name){
           tabItem(tabName="tsneClusterPage",
                    fluidRow(
                      box(width = 12, status="success",
-                         HTML("<h4>Manual Clustering the cells manually using tSNE Plot</h4>")
+                         HTML("<h4>Manual Clustering the cells manually based on Analysis Data (2D)</h4>")
                      ),
                      fluidRow(
                        column(width = 8,
                               plotlyOutput("tsneClusterPlot",height=600)
                        ),
                        column(width = 4,
-                              selectInput("tsneClusterGroup","Group:",avail.group,selected="0")
-                              ,selectInput("tsneClusterShape","Shape:",avail.group,selected="0")
+                              selectInput("tsneClusterAnalysisKey","Analysis Data:",avail.analysis.key)
+                              ,uiOutput("chooseClusterPlotDims")
                               #,sliderInput("tsne", "Number of observations:", 1, 100, 50)
                               ,numericInput("tsneSetGroup","Group Id:","0")
                               ,wellPanel(
@@ -115,7 +115,7 @@ startVATGUI<-function(data_name){
           tabItem(tabName="analysisPage",
                   fluidRow(
                     box(width=12, status="success",
-                        HTML("<h4>More Analysis Data Visualization</h4>")
+                        HTML("<h4>All Kinds of Analysis Data Visualization</h4>")
                     ),
                     fluidRow(
                       column(width = 8,
@@ -126,6 +126,7 @@ startVATGUI<-function(data_name){
                              uiOutput("choosePlotDims"),
                              textInput("analysisGene1","Gene1:",""),
                              textInput("analysisGene2","Gene2:",""),
+                             textInput("analysisGene3","Gene3:",""),
                              textInput("analysisColor","Color:","lightgrey,blue,orange,red"),
                              checkboxInput("analysisGradient", "Gradient", TRUE)
                              ,checkboxInput("analysisMultiPlot","Plot Multiple Genes", FALSE)
@@ -151,9 +152,27 @@ startVATGUI<-function(data_name){
       })
 
       #Start Manual Clustering (tSNE)
+      output$chooseClusterPlotDims <- renderUI({
+        key <- input$tsneClusterAnalysisKey
+        if(isEmpty(key)) return()
+        dims <- getAnalysisColnames(vat = vat,key=key)
+        selectInput("clusterPlotDims", "Plot Dims",dims, multiple=TRUE)
+      })
       output$tsneClusterPlot <- renderPlotly({
         input$refreshTsne
-        plotTSNE(vat, group.id="manual.cluster", gradient = TRUE, source="tsneCP")
+
+        key <- input$tsneClusterAnalysisKey
+        if(isEmpty(key)) {
+          return ()
+        }
+        dims <- input$clusterPlotDims
+        if(is.null(dims)) return()
+        if(length(dims)!=2){
+          return()
+        }
+        group.data <- getCellPropData(vat, "manual.cluster")
+        plotAnalysis(vat, dims=dims, key = key, title="", color.data=group.data, gradient = TRUE, source="tsneCP")
+        #plotTSNE(vat, group.id="manual.cluster", gradient = TRUE, source="tsneCP")
       })
       observeEvent(input$saveTsne,{
         selected_data <- event_data("plotly_selected",source="tsneCP")
@@ -182,6 +201,7 @@ startVATGUI<-function(data_name){
 
         gene1 <- input$analysisGene1
         gene2 <- input$analysisGene2
+        gene3 <- input$analysisGene3
         colors <- input$analysisColor
         colors <- strsplit(colors,split=",")[[1]]
         size <- NULL
@@ -195,7 +215,7 @@ startVATGUI<-function(data_name){
         }else{
           gene1 <- strsplit(gene1,split=",")[[1]]
           if(input$analysisMultiPlot && length(dims)==2){#3d plot.ly doesn't work!
-            plotMultipleGenes(vat, gene1, nrows = input$analysisPlotRows, dims=dims,
+            plotGenes(vat, gene1, nrows = input$analysisPlotRows, dims=dims,
                               key = key, gradient = input$analysisGradient,
                               colors = colors[1:2],size=size, sizes=sizes)
           }else{
@@ -204,8 +224,16 @@ startVATGUI<-function(data_name){
                        key = key, gradient = input$analysisGradient,
                        colors = colors[1:2],size=size, sizes=sizes)
             }else{
-              plotTwoGenes(vat, gene1, gene2, dims=dims,
-                           key = key,colors=colors,size=size, sizes=sizes)
+              gene2 <- strsplit(gene2,split=",")[[1]]
+              if(isEmpty(gene3)){
+                plotTwoGenes(vat, gene1, gene2, dims=dims,
+                             key = key,colors=colors,size=size, sizes=sizes)
+              }else{
+                gene3 <- strsplit(gene3,split=",")[[1]]
+                plotThreeGenes(vat, gene1, gene2, gene3, dims=dims,
+                             key = key,colors=colors,size=size, sizes=sizes)
+
+              }
             }
           }
         }
@@ -223,12 +251,16 @@ startVATGUI<-function(data_name){
 
       #Start Defferential Analysis
       output$chooseDiffGroup1 <- renderUI({
+        input$saveTsne
+        input$resetTsne
         group.key <- input$diffGroup
         all.groups <- sort(unique(vat@cell.props[,group.key]))
         all.groups <- c(as.character(all.groups),"All")
-        selectInput("diffGroup1"," Group 1: ",all.groups,selected=all.groups[1],multiple = TRUE)
+        selectInput("diffGroup1"," Group 1: ",all.groups,multiple = TRUE)
       })
       output$chooseDiffGroup2 <- renderUI({
+        input$saveTsne
+        input$resetTsne
         group.key <- input$diffGroup
         all.groups <- sort(unique(vat@cell.props[,group.key]))
         all.groups <- c("Choose one"="",as.character(all.groups))

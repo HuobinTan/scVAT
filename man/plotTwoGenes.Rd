@@ -2,7 +2,7 @@
 % Please edit documentation in R/visualization.R
 \name{plotTwoGenes}
 \alias{plotTwoGenes}
-\title{plot two gene expression based on the analysis result at the sametime}
+\title{plot two gene expression based on the analysis result at a map}
 \usage{
 plotTwoGenes(vat, gene1, gene2, dims = c(1, 2), key = "tSNE",
   colors = c("lightgrey", "blue", "orange", "red"), ...)
@@ -19,9 +19,7 @@ plotTwoGenes(vat, gene1, gene2, dims = c(1, 2), key = "tSNE",
 \item{key}{analysis data key}
 
 \item{colors}{color palette}
-
-\item{gradient}{default FALSE}
 }
 \description{
-plot two gene expression based on the analysis result at the sametime
+plot two gene expression based on the analysis result at a map
 }
