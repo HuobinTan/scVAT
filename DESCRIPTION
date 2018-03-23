@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: Tuobin Tan
 Maintainer: Huobin Tan <thbin@buaa.edu.cn>
 Description: scVAT (Single Cell Visualization Analysis Toolkit) is a package for analyzing single-cell data
-License: GPL-2
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports:

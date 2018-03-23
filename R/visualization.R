@@ -38,6 +38,34 @@ plotPC <- function(vat, x.pc, y.pc, z.pc=NULL, title=NULL, color="black", source
   plotAnalysis(vat=vat,dims=c(x.pc, y.pc, z.pc), title=title, key="PCA",colors=color,...)
 }
 
+#' Plot some analysis data's Standard Deviation (such as PCA)
+#' @param vat VATEntity
+#' @key analyais.key, default PCA
+#' @return plot object
+#' @export
+#'
+plotPCASDev <- function(vat, key="PCA",ndims=50, ...){
+  if(is.null(vat@analysis[key])){
+    stop("Analysis data is not exist")
+  }
+  sdev <- getAnalysisList(vat, key=key)$sdev
+  if(is.null(sdev)){
+    stop("Standard deviation is not exist")
+  }
+  if(ndims<length(sdev)) sdev <- sdev[1:ndims]
+  plot.data <- data.frame(x = c(1:length(sdev)), y=sdev)
+
+  p <- plot_ly(plot.data, x = ~x, y = ~y, type = 'scatter', mode = 'lines+markers')
+  axis.names <- c("X","Y")
+  if(key=="PCA"){
+    axis.names[1] <- "PC"
+    axis.names[2] <- "Standard Deviation"
+  }
+  p <- layout(p,
+              xaxis = list(title = axis.names[1]),
+              yaxis = list(title = axis.names[2]))
+  p
+}
 #' plot gene expression based on the analysis result
 #' @param vat vat entity
 #' @param genes gene's name for plot

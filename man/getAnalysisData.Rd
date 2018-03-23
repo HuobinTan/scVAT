@@ -2,7 +2,7 @@
 % Please edit documentation in R/dealing.R
 \name{getAnalysisData}
 \alias{getAnalysisData}
-\title{Get analysis result}
+\title{Get analysis data result}
 \usage{
 getAnalysisData(vat, key = "PCA", cols = c(1:50), as.data.frame = FALSE)
 }
@@ -11,10 +11,10 @@ getAnalysisData(vat, key = "PCA", cols = c(1:50), as.data.frame = FALSE)
 
 \item{key}{analysis key}
 
-\item{cols}{analysis data column vector}
+\item{cols}{analysis data column vector, if NULL, return all analysis data}
 
 \item{as.data.frame}{convert to data.frame if TRUE, default FALSE}
 }
 \description{
-Get analysis result
+Get analysis data result
 }

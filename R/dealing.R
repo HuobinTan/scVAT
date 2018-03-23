@@ -84,20 +84,35 @@ getUseData <- function(vat, use.genes = NULL, use.raw = FALSE, drop = FALSE){
   }
 }
 
-#' Get analysis result
+#' Get analysis data result
 #'
 #' @param vat vat entity
 #' @param key analysis key
-#' @param cols analysis data column vector
+#' @param cols analysis data column vector, if NULL, return all analysis data
 #' @param as.data.frame convert to data.frame if TRUE, default FALSE
 #' @export
 getAnalysisData <- function(vat, key = "PCA", cols=c(1:50),as.data.frame=FALSE){
   if(isEmpty(key)){
     data <- getUseData(vat)
   } else{
-    data <- eval(parse(text=paste0("vat@analysis$",key)))$cell.values[,cols]
+    if(is.null(cols)) data <- eval(parse(text=paste0("vat@analysis$",key)))$cell.values
+    else data <- eval(parse(text=paste0("vat@analysis$",key)))$cell.values[,cols]
   }
   if(as.data.frame) data <-  data.frame(data)
+  return(data)
+}
+
+#' Get analysis list
+#'
+#' @param vat vat entity
+#' @param key analysis key
+#' @param analysis list
+#' @export
+getAnalysisList <- function(vat, key = "PCA"){
+  if(is.null(vat@analysis[key])){
+    stop("Analysis data is not exist")
+  }
+  data <- eval(parse(text=paste0("vat@analysis$",key)))
   return(data)
 }
 
@@ -122,6 +137,7 @@ getAnalysisColnames <- function(vat, key="tSNE"){
 #' @param dims colnames subscript
 #' @export
 getAnalysisColName <- function(key="tSNE",dims=c(1:2)){
+  if(!is.numeric(dims[1])) return(dims)
   if(key=="PCA"){
     return(paste("PC", dims, sep=""))
   } else{
@@ -167,4 +183,68 @@ setGenePercent <- function(vat, gene.pattern, prop.name){
   vat <- addCellProp(vat, gene.percent, prop.name, meta.key = "Filter", meta.value = prop.name)
   return(vat)
 }
+#' Filter cells
+#' @param vat VAT Entity
+#' @param prop.name filtered cell's prop.name
+#' @param lower.limit filtered lower limit, only keeping the cells which properties are more than lower.limit
+#' @param upper.limit filtered upper limit, only keeping the cells which properties are less than upper.limit
+#' @return filtered data
+#' @export
+#' @examples
+#'  #filtering vat where 0< gene.nums < Inf and 0 < umi < 10000
+#'  vat <- filterCells(vat, prop.name = c("gene.nums","umi"),lower.limit = c(0, 0), upper.limit = c(Inf, 10000))
+filterCells <- function(vat, prop.name, lower.limit, upper.limit){
+  if((length(prop.name)!=length(lower.limit))||(length(prop.name)!=length(upper.limit))){
+    stop("the prop.name's length must equal lower.limit's length and upper.limit's length")
+  }
+  cell.props <- vat@cell.props
+  keep.cells <- lapply(c(1:length(prop.name)), function(x){
+    return (intersect(which(cell.props[prop.name[x]]>lower.limit), which(cell.props[prop.name[x]]<upper.limit) ))
+  })
+  keep.cells <- Reduce(intersect, keep.cells)
+  vat@cell.props <- vat@cell.props[keep.cells,]
+  vat@data <- vat@data[,keep.cells]
+  return(vat)
+}
 
+#' Filter genes
+#' @param vat VAT Entity
+#' @param prop.name filtered gene's prop.name
+#' @param lower.limit filtered lower limit, only keeping the genes which properties are more than lower.limit
+#' @param upper.limit filtered upper limit, only keeping the genes which properties are less than upper.limit
+#' @return filtered data
+#' @export
+#' @examples
+#'  #filtering vat where 3 < cell.nums < Inf
+#'  vat <- filterCells(vat, prop.name = c("cell.nums"),lower.limit = c(3), upper.limit = c(Inf))
+filterGenes <- function(vat, prop.name, lower.limit, upper.limit){
+  if((length(prop.name)!=length(lower.limit))||(length(prop.name)!=length(upper.limit))){
+    stop("the prop.name's length must equal lower.limit's length and upper.limit's length")
+  }
+  gene.props <- vat@gene.props
+  keep.genes <- lapply(c(1:length(prop.name)), function(x){
+    return (intersect(which(gene.props[prop.name[x]]>lower.limit), which(gene.props[prop.name[x]]<upper.limit) ))
+  })
+  keep.genes <- Reduce(intersect, keep.genes)
+  vat@gene.props <- vat@gene.props[keep.genes, ]
+  vat@data <- vat@data[keep.genes, ]
+  return(vat)
+}
+
+#' Save VAT data or analysis result
+#' @param vat VAT entity
+#' @param filename CSV filename
+#' @param analysis.key analysis result's key, default NULL, saving vat@data
+#' @param use.genes which genes will be saved
+#' @param use.cells which cells will be saved
+#' @export
+saveVATToCSV <- function(vat, filename, analysis.key = NULL, use.genes = NULL, use.cells = NULL, ...){
+  if(is.null(use.genes)) use.genes <- rownames(vat@data)
+  if(is.null(use.cells)) use.cells <- colnames(vat@data)
+  if(isEmpty(analysis.key)){
+    data <- as.matrix(vat@data[use.genes, use.cells])
+  }else{
+    data <- getAnalysisData(vat, analysis.key, cols = NULL)
+  }
+  write.csv(data, file=filename)
+}
