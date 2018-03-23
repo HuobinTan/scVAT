@@ -13,9 +13,9 @@ devtools::install_github("HuobinTan/scVAT")
 
 ## Loading gene-cell expression matrix
 There are three different functions for loading gene-cell expression matrix:
-1) Loading .csv file
-2) Loading 10X H5 file
-3) Loading 10X data path
+- Loading .csv file
+- Loading 10X H5 file
+- Loading 10X data path
 ```{r}
 library(scVAT)
 # loading matrix form csv file
@@ -54,19 +54,22 @@ vat <- doPCA(vat, pc.num = 50, use.genes = NULL)
 plotPCASDev(vat, key="PCA", ndims = 50)
 #runing tSNE based on analysis data
 vat <- doTSNE(vat, dims = 2, analysis.key = "PCA", use.col = 50)
-
+#clustering based on PCA. cluster.name is the name saved cluster result. k-value for kNN
+vat <- doCluster(vat,analysis.key="PCA", pc.num = 50, cluster.name="cluster", k = 100)
 #loading another analysis data (not run)
 vat <- loadAnalysisFromCSV(vat, filename = "youranalysisfile", ndims = 3, key="YourKey")
 ```
 
 
-##Visualize analysis data
+## Visualize analysis data
 ```{r}
 #plotting PCA result, set x.pc, y.pc. if 3D, set z.pc
 plotPC(vat, x.pc = 1, y.pc = 2, z.pc = 3)
 #plotting tSNE, and group.id for grouping
 plotTSNE(vat, group.id = "manual.cluster")
-#plotting one gene,two genes and three genes based on analysis data (parameter "key" sets visualization analysis data, the value is same as the key of loadAnalysisFromCSV function. PC result uses "PCA", tSNE result uses "tSNE")
+#plotting one gene,two genes and three genes based on analysis data
+#parameter "key" sets visualization analysis data, and is same as the key of loadAnalysisFromCSV function. 
+#PC result uses "PCA", tSNE result uses "tSNE"
 plotGene(vat, genes="Cdc20",dims=c(1,2),key="tSNE")
 plotTwoGenes(vat, gene1="Cdc20", gene2 = "Ube2c", dims = c(1,2), key="tSNE")
 plotThreeGenes(vat, gene1 = "Cdc20", gene2 = "Ube2c", gene2="Gata1", dim=c(1,2), key="tSNE")

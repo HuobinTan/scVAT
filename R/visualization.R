@@ -40,7 +40,8 @@ plotPC <- function(vat, x.pc, y.pc, z.pc=NULL, title=NULL, color="black", source
 
 #' Plot some analysis data's Standard Deviation (such as PCA)
 #' @param vat VATEntity
-#' @key analyais.key, default PCA
+#' @param key analyais.key, default PCA
+#' @param ndims show pc components
 #' @return plot object
 #' @export
 #'
