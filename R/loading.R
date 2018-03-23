@@ -209,7 +209,7 @@ loadAnalysisFromCSV <- function(vat, filename, ndims = 2, key = "tSNE", ...){
     rownames <- data[,1]
     data <- data[,-1]
     data <- as.matrix(data)
-    ?rownames(data) <- rownames
+    rownames(data) <- rownames
   }
   vat <- loadAnalysis(vat,analysis.data = data, dims=c(1:ndims),key=key)
   return(vat)
@@ -233,4 +233,3 @@ loadAnalysis <- function(vat, analysis.data, dims = c(1:2), key = "tSNE"){
   eval(parse(text=paste0("vat@analysis$",key," <- analysis.data")))
   return(vat)
 }
-
