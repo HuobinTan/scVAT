@@ -1,3 +1,8 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
 # scVAT (single-cell RNA Visual Analysis Toolkit)
 scVAT is a Visual Analysis Toolkit for single-cell RNA sequence data. scVAT implements a base pipeline for scRNA, including loading, preprocessing, filtering, PCA and tSNE etc. Besides, it provides:
 - A Web GUI (Graphical User Interface) for visualizing all kinds of analysis results
@@ -16,6 +21,7 @@ There are three different functions for loading gene-cell expression matrix:
 - Loading .csv file
 - Loading 10X H5 file
 - Loading 10X data path
+
 ### loading csv file
 ```{r}
 library(scVAT)
@@ -69,7 +75,7 @@ vat <- doTSNE(vat, dims = 2, analysis.key = "PCA", use.col = 50)
 #clustering based on PCA. cluster.name is the name saved cluster result. k-value for kNN
 vat <- doCluster(vat,analysis.key="PCA", pc.num = 50, cluster.name="cluster", k = 100)
 ```
-###Load external analysis results
+### Load external analysis results
 ```{r}
 #combining other analysis data
 #analysis.data: the variable storing analysis result
@@ -122,7 +128,7 @@ Plot a few genes at the sometime (just 2D maps)
 #nrows: set rows number
 plotGenes(vat, genes=c("Cdc20","Ube2c","Gata1","Gata2"),nrows=2, dims=c(1,2), key="tSNE")
 ```
-Web GUI
+Start Web GUI
 ```{r}
 #starting Web GUI for visualizing, manually clustering, and differintialing
 #be cautious, the parameter is a string of variable name, not variable
