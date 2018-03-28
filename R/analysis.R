@@ -3,9 +3,12 @@
 #' @param vat vat entity
 #' @param pc.num default 50
 #' @param use.genes run PCA using the genes. if NULL, using vat@use.genes. default NULL
+#' @param key set PCA result's key, default "PCA"
 #' @importFrom irlba prcomp_irlba
 #' @export
-doPCA <- function(vat, pc.num = 50, use.genes = NULL, ...){
+#' @examples
+#' vat <- doPCA(vat, pc.num = 50)
+doPCA <- function(vat, pc.num = 50, use.genes = NULL, key="PCA", ...){
   data <- getUseData(vat, use.genes=use.genes)
   pc.num <- min(pc.num, nrow(data) - 1)
   pca <- irlba::prcomp_irlba(t(data), n = pc.num, retx=TRUE, ...)
@@ -14,7 +17,7 @@ doPCA <- function(vat, pc.num = 50, use.genes = NULL, ...){
   pca$cell.values <- pca$x
   pca$rotation <- NULL
   pca$x <- NULL
-  eval(parse(text=paste0("vat@analysis$","PCA","<-pca")))
+  eval(parse(text=paste0("vat@analysis$",key,"<-pca")))
   return(vat)
 }
 
@@ -22,15 +25,22 @@ doPCA <- function(vat, pc.num = 50, use.genes = NULL, ...){
 #'
 #' @param vat vat entity
 #' @param dims tSNE dimension
+#' @param analysis.key tSNE input data key, default "PCA", if NULL, use vat@data
+#' @param use.col columns number for tSNE
+#' @param key set tSNE result's key, default "tSNE"
+#' @param seed random seed for tSNE, default NULL
+#' @param ... see also Rtsne::Rtsne parameters
 #' @importFrom Rtsne Rtsne
 #' @export
+#' @examples
+#' vat <- doTSNE(vat, dims = 2, use.col = 50, seed = 100)
 #'
-doTSNE <- function(vat, dims = 2, analysis.key = "PCA", use.col = 50, ...){
+doTSNE <- function(vat, dims = 2, analysis.key = "PCA", use.col = 50, key="tSNE", seed = NULL,...){
+  if(!is.null(seed)) set.seed(seed)
   data <- getAnalysisData(vat,key = analysis.key, cols =c(1:use.col))
   tsne <- Rtsne::Rtsne(as.matrix(data), dims = dims, ...)
   tsne <- tsne$Y
-  paste("tSNE_", c(1:dims),sep="")
-  colnames(tsne) <- getAnalysisColName("tSNE",c(1:dims))
+  colnames(tsne) <- getAnalysisColName(key, c(1:dims))
   vat@analysis$tSNE$cell.values <- tsne
   return(vat)
 }

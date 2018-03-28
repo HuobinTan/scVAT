@@ -1,5 +1,5 @@
-# scVAT (single-cell RNA Visualization Analysis Toolkit)
-scVAT is a Visualization Analysis Toolkit for single-cell RNA sequence data. scVAT implements a base pipeline for scRNA, including loading, preprocessing, filtering, PCA and tSNE etc. Besides, it provides:
+# scVAT (single-cell RNA Visual Analysis Toolkit)
+scVAT is a Visual Analysis Toolkit for single-cell RNA sequence data. scVAT implements a base pipeline for scRNA, including loading, preprocessing, filtering, PCA and tSNE etc. Besides, it provides:
 - A Web GUI (Graphical User Interface) for visualizing all kinds of analysis results
 - Graphical clustering manually based on analysis data
 - Differentiating cells
@@ -16,14 +16,25 @@ There are three different functions for loading gene-cell expression matrix:
 - Loading .csv file
 - Loading 10X H5 file
 - Loading 10X data path
+### loading csv file
 ```{r}
 library(scVAT)
-# loading matrix form csv file
-# gene.index: gene name's index
-# cell.index: cell name's index
-# gene.in.row: gene stores in a row
-csv.data <- loadCSVData (filename = "./matrix.csv", gene.index = 1, cell.index = 1, gene.in.row=TRUE)
 
+#Example1: load expression matrix from CSV (using your file name)
+#the firsh column is gene name, the first row is cell id
+csv.data <- loadCSVData("./expression.csv")
+
+#Example2: loading matrix using different parameters
+# gene.index: gene name's index, default 1
+# cell.index: cell name's index, default 1
+# gene.in.row: genes store in rows, default TRUE
+csv.data <- loadCSVData (filename = "./expression.csv", gene.index = 1, cell.index = 1, gene.in.row=TRUE)
+
+#Example3:  loading matrix and specifying gene.names and cell ids, and genes store in columns
+csv.data <- loadCSVData (filename = "./expression.csv", gene.names = genes, cell.names = cells, gene.in.row=FALSE)
+```
+### loading 10x result (H5file or path)
+```{r}
 # loading matrix from 10x H5 file
 # genome: genome in the H5, such as "mm10"", "GRch38", default NULL, the first genome 
 h5.data <-load10XH5(filename = "./filtered_gene_bc_matrices_h5.h5", genome = NULL)
@@ -46,6 +57,7 @@ vat <- initVATEntity(data.raw = csv.data, title = "VAT", min.genes = 0, min.cell
 ```
 
 ## Do analysis
+### Do base pipeline (PCA, tSNE and Clustering)
 ```{r}
 #running PCA
 #PCA will be saved in the vat@analysis$PCA
@@ -56,24 +68,62 @@ plotPCASDev(vat, key="PCA", ndims = 50)
 vat <- doTSNE(vat, dims = 2, analysis.key = "PCA", use.col = 50)
 #clustering based on PCA. cluster.name is the name saved cluster result. k-value for kNN
 vat <- doCluster(vat,analysis.key="PCA", pc.num = 50, cluster.name="cluster", k = 100)
-#loading another analysis data (not run)
+```
+###Load external analysis results
+```{r}
+#combining other analysis data
+#analysis.data: the variable storing analysis result
+#dims: the dimensions 
+#key: accession key
+vat <- loadAnalysis(vat, analysis.data = tsne$Y, dims = c(1:2), key = "tSNE")
+
+#loading another analysis data from csv file (filename)
+#ndims: the dimension (2 or 3 more) 
+#key: analysis data key
 vat <- loadAnalysisFromCSV(vat, filename = "youranalysisfile", ndims = 3, key="YourKey")
 ```
 
 
 ## Visualize analysis data
+### Visualize PCA and tSNE result
 ```{r}
 #plotting PCA result, set x.pc, y.pc. if 3D, set z.pc
 plotPC(vat, x.pc = 1, y.pc = 2, z.pc = 3)
 #plotting tSNE, and group.id for grouping
 plotTSNE(vat, group.id = "manual.cluster")
-#plotting one gene,two genes and three genes based on analysis data
-#parameter "key" sets visualization analysis data, and is same as the key of loadAnalysisFromCSV function. 
-#PC result uses "PCA", tSNE result uses "tSNE"
-plotGene(vat, genes="Cdc20",dims=c(1,2),key="tSNE")
+```
+### Visualize gene expressions based on analysis results 
+Plot one gene expression (2D) 
+```{r}
+#genes: gene name
+#dims: dimensions, for 2D: c(1,2), 3D
+#key: using visualization analysis data, using getAnalysisKey(vat) to get avaliable keys
+#gradient: whether or not gradient, default TRUE
+#colors: color palette
+plotGene(vat, genes="Cdc20", dims=c(1,2), key="tSNE", gradient=TRUE, colors=c("lightgrey","blue"))
+```
+Plot one gene expression (3D) 
+```{r}
+#genes: gene name
+#dims: dimensions, for 3D: c(1,2,3)
+#key: using visualization analysis data, using getAnalysisKey(vat) to get avaliable keys
+#gradient: whether or not gradient, default TRUE
+#colors: color palette
+#size,size: adjust point size
+plotGene(vat, genes="Cdc20", dims=c(1,2,3), key="PHATE", gradient=TRUE, colors=c("lightgrey","blue"), size=1, sizes=c(1,5))
+```
+Plot two or three genes (no gradient, other parameters are similar to plot one gene)
+```{r}
 plotTwoGenes(vat, gene1="Cdc20", gene2 = "Ube2c", dims = c(1,2), key="tSNE")
-plotThreeGenes(vat, gene1 = "Cdc20", gene2 = "Ube2c", gene2="Gata1", dim=c(1,2), key="tSNE")
-
+plotThreeGenes(vat, gene1 = "Cdc20", gene2 = "Ube2c", gene3="Gata1", dim=c(1,2), key="tSNE")
+```
+Plot a few genes at the sometime (just 2D maps)
+```{r}
+#nrows: set rows number
+plotGenes(vat, genes=c("Cdc20","Ube2c","Gata1","Gata2"),nrows=2, dims=c(1,2), key="tSNE")
+```
+Web GUI
+```{r}
 #starting Web GUI for visualizing, manually clustering, and differintialing
 #be cautious, the parameter is a string of variable name, not variable
 startVATGUI("vat")

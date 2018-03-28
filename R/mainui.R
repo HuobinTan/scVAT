@@ -50,7 +50,7 @@ startVATGUI<-function(data_name){
                     ),
                     fluidRow(
                       column(width = 8,
-                             plotlyOutput("tsnePlot",height="auto")
+                             plotlyOutput("tsnePlot",height="600px")
                       ),
                       column(width = 4,
                              selectInput("tsneGroup","Group:",avail.group,selected=avail.group[2])
@@ -67,7 +67,7 @@ startVATGUI<-function(data_name){
                      ),
                      fluidRow(
                        column(width = 8,
-                              plotlyOutput("tsneClusterPlot",height="auto")
+                              plotlyOutput("tsneClusterPlot",height="600px")
                        ),
                        column(width = 4,
                               selectInput("tsneClusterAnalysisKey","Analysis Data:",avail.analysis.key)
@@ -119,7 +119,7 @@ startVATGUI<-function(data_name){
                     ),
                     fluidRow(
                       column(width = 8,
-                             plotlyOutput("analysisPlot",height="auto")
+                             plotlyOutput("analysisPlot",height="600px")
                       ),
                       column(width = 4,
                              uiOutput("chooseAnalysisKey"),

@@ -264,7 +264,7 @@ plotAnalysis <- function(vat, dims = c(1:2), title=NULL, key="tSNE", color.data 
                              zaxis = list(title = axis.names[3]))
     )
   }
-  if(isEmpty(title)){
+  if(!isEmpty(title)){
     p <- layout(p, title=title)
   }
   p$elementId <- NULL

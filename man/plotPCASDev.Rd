@@ -8,6 +8,10 @@ plotPCASDev(vat, key = "PCA", ndims = 50, ...)
 }
 \arguments{
 \item{vat}{VATEntity}
+
+\item{key}{analyais.key, default PCA}
+
+\item{ndims}{show pc components}
 }
 \value{
 plot object

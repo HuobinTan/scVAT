@@ -4,7 +4,7 @@
 \alias{doPCA}
 \title{do PCA using irlba library}
 \usage{
-doPCA(vat, pc.num = 50, use.genes = NULL, ...)
+doPCA(vat, pc.num = 50, use.genes = NULL, key = "PCA", ...)
 }
 \arguments{
 \item{vat}{vat entity}
@@ -12,6 +12,8 @@ doPCA(vat, pc.num = 50, use.genes = NULL, ...)
 \item{pc.num}{default 50}
 
 \item{use.genes}{run PCA using the genes. if NULL, using vat@use.genes. default NULL}
+
+\item{key}{set PCA result's key, default "PCA"}
 }
 \description{
 do PCA using irlba library

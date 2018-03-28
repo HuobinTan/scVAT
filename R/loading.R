@@ -13,6 +13,8 @@
 #'
 #' @examples
 #' data <- loadCSVData("./filename.csv")
+#'
+#' data <- loadCSVData("./filename.csv", gene.in.row = FALSE)
 loadCSVData <- function(filename, gene.index = 1, cell.index = 1,
                         gene.names=NULL, cell.names=NULL, gene.in.row=TRUE,...){
   if( (gene.index <= 0)&&(is.null(gene.names)) ){
@@ -133,7 +135,7 @@ load10XPath <- function(path)
 #' @param title dataset name
 #' @param min.genes Include cells where more than this many genes are detected, default 0
 #' @param min.cells Include genes where more than this many cells are detected, default 0
-#' @param cell.scale whether or not normalizing by library size, default TRUE
+#' @param cell.scale whether or not normalizing by library size, default FALSE
 #' @param scale.factor multiple factor for cell.scale, default 0, using the mean for library size
 #' @param log.trans whether or not log-transform (log(p+pseudocount)), default TRUE
 #' @param pseducount pseducount for log-transform, default 1
@@ -141,8 +143,12 @@ load10XPath <- function(path)
 #' @export
 #'
 #' @import Matrix
+#' @examples
+#' vat <- initVATEntity(data.raw = data, title="VAT")
+#'
+#' vat <- initVATEntity(data, title="VAT", min.genes = 0, min.cells = 3, cell.scale = TRUE)
 initVATEntity <- function(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
-                          cell.scale = TRUE, scale.factor = 0,
+                          cell.scale = FALSE, scale.factor = 0,
                           log.trans = TRUE, pseudocount = 1,
                           verbose = TRUE){
   if(verbose) logging("create VAT Entity...")
@@ -166,8 +172,8 @@ initVATEntity <- function(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
 
   #set gene and cell properties
   entity@use.genes <- use.genes
-  entity@gene.props <- data.frame(name=use.genes, cell.nums=cell.nums[use.genes])
-  entity@cell.props <- data.frame(name=use.cells, gene.nums=gene.nums[use.cells],umi=umi.nums[use.cells])
+  entity@gene.props <- data.frame(name=use.genes, cell.nums=cell.nums[use.genes], row.names = use.genes)
+  entity@cell.props <- data.frame(name=use.cells, gene.nums=gene.nums[use.cells],umi=umi.nums[use.cells],row.names = use.cells)
   entity@cell.props$manual.cluster <- 0
   entity@prop.meta[["Group"]] <- c("manual.cluster")
 
@@ -203,6 +209,9 @@ initVATEntity <- function(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
 #' @export
 #'
 #' @return new vat entity including new analysis result
+#' @examples
+#' #loading external tSNE result
+#'  vat <- loadAnalysisFromCSV(vat, filename="tsne$Y.csv", ndims=2, key = "tSNE")
 loadAnalysisFromCSV <- function(vat, filename, ndims = 2, key = "tSNE", ...){
   data <- read.csv(filename,...)
   if((ndims + 1) == ncol(data)){
