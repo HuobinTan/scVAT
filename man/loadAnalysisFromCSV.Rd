@@ -21,3 +21,7 @@ new vat entity including new analysis result
 \description{
 load analysis result manually from csv
 }
+\examples{
+#loading external tSNE result
+ vat <- loadAnalysisFromCSV(vat, filename="tsne$Y.csv", ndims=2, key = "tSNE")
+}

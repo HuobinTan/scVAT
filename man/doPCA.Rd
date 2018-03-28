@@ -18,3 +18,6 @@ doPCA(vat, pc.num = 50, use.genes = NULL, key = "PCA", ...)
 \description{
 do PCA using irlba library
 }
+\examples{
+vat <- doPCA(vat, pc.num = 50)
+}

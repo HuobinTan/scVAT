@@ -30,4 +30,6 @@ load data from csv file
 }
 \examples{
 data <- loadCSVData("./filename.csv")
+
+data <- loadCSVData("./filename.csv", gene.in.row = FALSE)
 }

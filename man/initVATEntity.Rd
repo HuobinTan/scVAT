@@ -5,7 +5,7 @@
 \title{initialize VAT Entity}
 \usage{
 initVATEntity(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
-  cell.scale = TRUE, scale.factor = 0, log.trans = TRUE,
+  cell.scale = FALSE, scale.factor = 0, log.trans = TRUE,
   pseudocount = 1, verbose = TRUE)
 }
 \arguments{
@@ -17,7 +17,7 @@ initVATEntity(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
 
 \item{min.cells}{Include genes where more than this many cells are detected, default 0}
 
-\item{cell.scale}{whether or not normalizing by library size, default TRUE}
+\item{cell.scale}{whether or not normalizing by library size, default FALSE}
 
 \item{scale.factor}{multiple factor for cell.scale, default 0, using the mean for library size}
 
@@ -29,4 +29,9 @@ initVATEntity(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
 }
 \description{
 initialize VAT Entity
+}
+\examples{
+vat <- initVATEntity(data.raw = data, title="VAT")
+
+vat <- initVATEntity(data, title="VAT", min.genes = 0, min.cells = 3, cell.scale = TRUE)
 }

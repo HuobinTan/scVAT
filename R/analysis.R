@@ -29,7 +29,7 @@ doPCA <- function(vat, pc.num = 50, use.genes = NULL, key="PCA", ...){
 #' @param use.col columns number for tSNE
 #' @param key set tSNE result's key, default "tSNE"
 #' @param seed random seed for tSNE, default NULL
-#' @param ... see also Rtsne::Rtsne parameters
+#' @param ... see also Rtsne::Rtsne parameters, For example, set check_duplicates = FALSE for Error "Remove duplicates before running TSNE."
 #' @importFrom Rtsne Rtsne
 #' @export
 #' @examples

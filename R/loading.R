@@ -155,7 +155,13 @@ initVATEntity <- function(data.raw, title = "VAT", min.genes = 0, min.cells = 0,
   entity <- new(Class="VATEntity", data.raw=as(data.raw,"sparseMatrix"), title=title)
   use.genes <- as.vector(rownames(entity@data.raw))
   use.cells <- as.vector(colnames(entity@data.raw))
-
+  #Filter duplicated genes and cells
+  dup.genes <- which(duplicated(use.genes))
+  dup.cells <- which(duplicated(use.cells))
+  if(length(dup.genes) > 0)  use.genes <- use.genes[-dup.genes]
+  if(length(dup.cells) > 0)use.cells <- use.cells[-dup.cells]
+  entity@data.raw <- entity@data.raw[use.genes, use.cells]
+  #Calculating gene number, UMI and cell number
   gene.nums <- apply(entity@data.raw, 2, function(x){return (sum(x>0))})  # expressed gene's number for eache cell
   umi.nums <- Matrix::colSums(entity@data.raw) #apply(entity@data.raw, 2, function(x){return (sum(x))}) # expressed gene's UMI for each cell
   cell.nums <- apply(entity@data.raw, 1, function(x){return (sum(x>0))}) # cell's number for each gene

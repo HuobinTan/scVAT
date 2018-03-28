@@ -1,8 +1,3 @@
----
-output:
-  pdf_document: default
-  html_document: default
----
 # scVAT (single-cell RNA Visual Analysis Toolkit)
 scVAT is a Visual Analysis Toolkit for single-cell RNA sequence data. scVAT implements a base pipeline for scRNA, including loading, preprocessing, filtering, PCA and tSNE etc. Besides, it provides:
 - A Web GUI (Graphical User Interface) for visualizing all kinds of analysis results
@@ -53,9 +48,12 @@ path10x.data <- load10XPath(path = "./filtered_gene_bc_matrices/mm10")
 Building VAT object based on the last expression matrix, Besides:
 - Seting paremeters to filter genes and cells (min.genes, min.cells)
 - Scaling the data using library size: if cell.scale is  TRUE, p <- (p / nUMI \* scale.factor) for each cell;  if scale.factor is 0,  scale.factor =  median(nUMI)
-- Log-Transform: if log.trans, then p <- log(p + pesudocount)
+- Log-Transform: if log.trans, then p <- log(p + pseudocount)
 ```{r}
-#initializing VAT entity
+#Example1: initializing VAT entity (using default parameters)
+vat <- initVATEntity(csv.data, title="VAT")
+
+#Example2: initializing VAT entity using different parameters
 vat <- initVATEntity(data.raw = csv.data, title = "VAT", min.genes = 0, min.cells = 0,
                           cell.scale = TRUE, scale.factor = 0,
                           log.trans = TRUE, pseudocount = 1,
@@ -102,7 +100,7 @@ plotTSNE(vat, group.id = "manual.cluster")
 Plot one gene expression (2D) 
 ```{r}
 #genes: gene name
-#dims: dimensions, for 2D: c(1,2), 3D
+#dims: dimensions, for 2D: c(1,2) or c(1,3)...
 #key: using visualization analysis data, using getAnalysisKey(vat) to get avaliable keys
 #gradient: whether or not gradient, default TRUE
 #colors: color palette
@@ -131,6 +129,6 @@ plotGenes(vat, genes=c("Cdc20","Ube2c","Gata1","Gata2"),nrows=2, dims=c(1,2), ke
 Start Web GUI
 ```{r}
 #starting Web GUI for visualizing, manually clustering, and differintialing
-#be cautious, the parameter is a string of variable name, not variable
+#be cautious, the parameter is a character string of variable name, not variable
 startVATGUI("vat")
 ```
