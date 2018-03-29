@@ -35,7 +35,7 @@ BHSC
 ## Doing analysis
 
 Running the base pipline, including PCA, t-SNE, and Cluster
-```{r, fig.show='hold'}
+```{r, fig.show = "hold", fig.width = 6}
 #do PCA, pc.num = 50
 BHSC <- doPCA(BHSC, pc.num = 50)
 #Plot PC standard deviation
@@ -55,7 +55,7 @@ BHSC <- loadAnalysisFromCSV(BHSC, "BHSC_PHATE.csv", ndims =3, key="PHATE")
 
 ## Visualizing one gene expression
 
-```{r, fig.show='hold'}
+```{r, fig.show='hold', fig.width = 6}
 #plot one gene expression based on t-SNE
 plotGene(BHSC, genes="Cdc20", dims = c(1,2))
 #plot one gene expression based on t-SNE, no gradient, and different colors
@@ -67,7 +67,7 @@ plotGene(BHSC, genes="Cdc20", dims = c(1,2,3), key="PHATE",size=1,sizes=c(1,5))
 ```
 
 ## Visualizing two or three gene expressions
-```{r, fig.show='hold'}
+```{r, fig.show='hold', fig.width = 6}
 #plot two genes based on tSNE
 plotTwoGenes(BHSC, gene1 = "Cdc20",gene2 = "Gata1")
 #plot two genes based on tSNE, and use different colors
@@ -79,7 +79,7 @@ plotThreeGenes(BHSC, gene1 = "Cdc20", gene2 = "Gata1", gene3 = "Klf1", dims=c(1:
 ```
 
 ## Visualizing many gene expressions in one map at the sametime
-```{r, fig.show='hold'}
+```{r, fig.show='hold', fig.width = 6}
 #Plot many genes at the sametime, nrows sets row number
 plotGenes(BHSC, genes = c("Cdc20","Gata1","Klf1","Ube2c"), nrows=2)
 ```
@@ -89,39 +89,3 @@ plotGenes(BHSC, genes = c("Cdc20","Gata1","Klf1","Ube2c"), nrows=2)
 #start Web GUI for visualization, clustering manually, and differential analysis
 startVATGUI("BHSC")
 ```
-
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
-
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
-
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))

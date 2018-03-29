@@ -126,9 +126,29 @@ Plot a few genes at the sometime (just 2D maps)
 #nrows: set rows number
 plotGenes(vat, genes=c("Cdc20","Ube2c","Gata1","Gata2"),nrows=2, dims=c(1,2), key="tSNE")
 ```
-Start Web GUI
+Start Web GUI, and explore the dataset
 ```{r}
 #starting Web GUI for visualizing, manually clustering, and differintialing
 #be cautious, the parameter is a character string of variable name, not variable
 startVATGUI("vat")
 ```
+## Differential Analysis
+If you have got cell's clusters (including: `doCluster()` result and  'Manual Clustering' result in Web GUI), you'll do differential analysis to find each cluster's marker genes.
+### Get marker genes for each cluster
+```{r}
+#group.key: group data key value, using `getPropMeta(vat,"Group")` to get available group.keys
+#         doCluster() function: group.key = cluster.name, default 'cluster', 
+#         'Manual Clustering' in Web GUI: group.key='manual.cluster'
+#method: differential analysis method, 't' - t-test, 'wilcox' - Wilcoxon rank sum test, 'DESeq2' - use DESeq2 library
+#min.logfc: only return genes at least X-fold difference (log-scale) between the two groups of cells. Default is 0.25
+#min.avg: only return genes that are average expression at least min.avg in either of the two populations. 
+markers <- doAllDiffAnalysis(vat, group.key="cluster", method="t",min.logfc=0.25, min.avg = 0.1)
+```
+### Get marker genes for specific two groups
+```{r}
+#Compare group1 and group2 cells from 'Manual Clustering', and get group1's significant genes. 
+#if group2=NULL, compare group1 and all other cells
+#other parameters are same as doAllDiffAnalysis
+group.markers <- doDiffAnalysis(vat, group1="1", group2="2",group.key="manual.cluster")
+```
+In addition, you can do differential analysis in Web GUI
