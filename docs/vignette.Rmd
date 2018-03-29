@@ -85,7 +85,7 @@ plotGenes(BHSC, genes = c("Cdc20","Gata1","Klf1","Ube2c"), nrows=2)
 ```
 
 ## Start Web GUI
-```{r}
+```{r warning=FALSE}
 #start Web GUI for visualization, clustering manually, and differential analysis
 startVATGUI("BHSC")
 ```
