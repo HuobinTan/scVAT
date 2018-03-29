@@ -1,10 +1,8 @@
-#' Graphical User Interface for Single-Cell Visualization Analysis Toolkit
+#' Graphical User Interface for Single-Cell Visual Analysis Toolkit
 #'
 #' start shiny app UI for scVAT
 #'
-#' @param data ...
-#'
-#' @return
+#' @param data_name VAT Entity name (charcter)
 #'
 #' @author thbin
 #'
@@ -17,11 +15,6 @@
 #' @examples
 #'
 startVATGUI<-function(data_name){
-  #public data pools
-  #globalObjects = ls(.GlobalEnv)
-  #if(".assay.dataset" %in% globalObjects){
-  #  oldData <- .GlobalEnv$.assay.dataset
-  #}
   require(shiny)
   require(shinydashboard)
   require(plotly)
@@ -65,7 +58,7 @@ startVATGUI<-function(data_name){
           tabItem(tabName="manualClusterPage",
                    fluidRow(
                      box(width = 12, status="success",
-                         HTML("<h4>Manual Clustering the cells manually based on Analysis Data (2D)</h4>")
+                         HTML("<h4>Clustering the cells manually based on Analysis Data (2D)</h4>")
                      ),
                      fluidRow(
                        column(width = 8,

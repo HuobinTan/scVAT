@@ -1,3 +1,8 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
 # scVAT (single-cell RNA Visual Analysis Toolkit)
 scVAT is a Visual Analysis Toolkit for single-cell RNA sequence data. scVAT implements a base pipeline for scRNA, including loading, preprocessing, filtering, PCA and tSNE etc. Besides, it provides:
 - A Web GUI (Graphical User Interface) for visualizing all kinds of analysis results
@@ -134,6 +139,7 @@ startVATGUI("vat")
 ```
 ## Differential Analysis
 If you have got cell's clusters (including: `doCluster()` result and  'Manual Clustering' result in Web GUI), you'll do differential analysis to find each cluster's marker genes.
+
 ### Get marker genes for each cluster
 ```{r}
 #group.key: group data key value, using `getPropMeta(vat,"Group")` to get available group.keys

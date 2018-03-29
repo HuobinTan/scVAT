@@ -2,15 +2,12 @@
 % Please edit documentation in R/mainui.R
 \name{startVATGUI}
 \alias{startVATGUI}
-\title{Graphical User Interface for Single-Cell Visualization Analysis Toolkit}
+\title{Graphical User Interface for Single-Cell Visual Analysis Toolkit}
 \usage{
 startVATGUI(data_name)
 }
 \arguments{
-\item{data}{...}
-}
-\value{
-
+\item{data_name}{VAT Entity name (charcter)}
 }
 \description{
 start shiny app UI for scVAT

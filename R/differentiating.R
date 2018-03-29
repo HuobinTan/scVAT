@@ -67,6 +67,8 @@ doDiffAnalysis <- function(vat, group1, group2 = NULL, group.key = "cluster", us
     stop("No genes satisfy threshold, maybe adjust threshold: min.avg, min.dff.avg")
   }
 
+  data1 <- data[use.genes, cells1, drop = F]
+  data2 <- data[use.genes, cells2, drop = F]
   log.avg1 <- log(Matrix::rowMeans(exp(data1)-1) + 1)
   log.avg2 <- log(Matrix::rowMeans(exp(data2)-1) + 1)
   log.fc <- log.avg1 - log.avg2
