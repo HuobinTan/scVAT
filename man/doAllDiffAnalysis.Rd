@@ -6,7 +6,8 @@
 \usage{
 doAllDiffAnalysis(vat, group.key = "cluster", use.genes = NULL,
   method = "t", min.logfc = 0.25, only.pos = FALSE, min.avg = 0.1,
-  min.diff.avg = -Inf, top.num = Inf, min.cells = 1, verbose = TRUE)
+  min.diff.avg = -Inf, top.num = Inf, min.cells = 1,
+  verbose = TRUE)
 }
 \arguments{
 \item{vat}{VAT entity}

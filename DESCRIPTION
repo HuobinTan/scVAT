@@ -20,4 +20,4 @@ Imports:
   cccd,
   igraph,
   DT
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

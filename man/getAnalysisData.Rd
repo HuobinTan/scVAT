@@ -4,7 +4,8 @@
 \alias{getAnalysisData}
 \title{Get analysis data result}
 \usage{
-getAnalysisData(vat, key = "PCA", cols = c(1:50), as.data.frame = FALSE)
+getAnalysisData(vat, key = "PCA", cols = c(1:50),
+  as.data.frame = FALSE)
 }
 \arguments{
 \item{vat}{vat entity}

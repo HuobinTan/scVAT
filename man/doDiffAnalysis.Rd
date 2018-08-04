@@ -5,9 +5,9 @@
 \title{Differential Analysis for group1 and group2 (according to group.key)}
 \usage{
 doDiffAnalysis(vat, group1, group2 = NULL, group.key = "cluster",
-  use.genes = NULL, method = "t", min.logfc = 0.25, only.pos = FALSE,
-  min.avg = 0.1, min.diff.avg = -Inf, top.num = Inf, min.cells = 1,
-  verbose = TRUE)
+  use.genes = NULL, method = "t", min.logfc = 0.25,
+  only.pos = FALSE, min.avg = 0.1, min.diff.avg = -Inf,
+  top.num = Inf, min.cells = 1, verbose = TRUE)
 }
 \arguments{
 \item{vat}{VAT entity}

@@ -4,8 +4,8 @@
 \alias{loadCSVData}
 \title{load data from csv file}
 \usage{
-loadCSVData(filename, gene.index = 1, cell.index = 1, gene.names = NULL,
-  cell.names = NULL, gene.in.row = TRUE, ...)
+loadCSVData(filename, gene.index = 1, cell.index = 1,
+  gene.names = NULL, cell.names = NULL, gene.in.row = TRUE, ...)
 }
 \arguments{
 \item{filename}{csv file names}

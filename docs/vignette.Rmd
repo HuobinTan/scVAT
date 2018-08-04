@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 ## Initializing VATEntity object
 scVAT can build VATEntity object from Single-Cell RNA-seq data from a csv, sparse mtx or h5 file. 
 Firstly, loading `scVAT` package
-```{r}
+```{r warning=FALSE}
 library(scVAT)
 ```
 Loading raw data from CSV File, then initializing VATEntity object

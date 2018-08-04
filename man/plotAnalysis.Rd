@@ -5,8 +5,8 @@
 \title{plot using analysis data}
 \usage{
 plotAnalysis(vat, dims = c(1:2), title = NULL, key = "tSNE",
-  color.data = NULL, gradient = FALSE, colors = NULL, source = "src",
-  ...)
+  color.data = NULL, gradient = FALSE, colors = NULL,
+  source = "src", ...)
 }
 \arguments{
 \item{vat}{vat entity}

@@ -4,8 +4,8 @@
 \alias{doTSNE}
 \title{do tSNE using Rtsne library}
 \usage{
-doTSNE(vat, dims = 2, analysis.key = "PCA", use.col = 50, key = "tSNE",
-  seed = NULL, ...)
+doTSNE(vat, dims = 2, analysis.key = "PCA", use.col = 50,
+  key = "tSNE", seed = NULL, ...)
 }
 \arguments{
 \item{vat}{vat entity}

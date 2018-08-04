@@ -4,7 +4,8 @@
 \alias{addCellProp}
 \title{Add cell properties}
 \usage{
-addCellProp(vat, cell.prop, prop.name, meta.key = NULL, meta.value = NULL)
+addCellProp(vat, cell.prop, prop.name, meta.key = NULL,
+  meta.value = NULL)
 }
 \arguments{
 \item{vat}{vat entity}

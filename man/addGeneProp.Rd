@@ -4,7 +4,8 @@
 \alias{addGeneProp}
 \title{Add gene properties}
 \usage{
-addGeneProp(vat, gene.prop, prop.name, meta.key = NULL, meta.value = NULL)
+addGeneProp(vat, gene.prop, prop.name, meta.key = NULL,
+  meta.value = NULL)
 }
 \arguments{
 \item{vat}{vat entity}
